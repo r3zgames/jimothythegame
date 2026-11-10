@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Play Stats Privacy · Jimothy: Rain City Rumble</title>
+<meta name="description" content="What the opt-in, anonymous play stats behind the Jimothy: Rain City Rumble sightings board collect, and how to turn them off.">
+<link rel="canonical" href="https://jimothythegame.com/stats/privacy.html">
+<style>
+:root{--bg:#f4efe2;--ink:#1f2a30;--soft:#5b6870;--rule:#d8cfb8;--accent:#a3241b;--card:#fffaf0}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#0b1c25;--ink:#e8e2d2;--soft:#a9b4b8;--rule:#24404d;--accent:#ff8a73;--card:#10242f}}
+:root[data-theme="dark"]{--bg:#0b1c25;--ink:#e8e2d2;--soft:#a9b4b8;--rule:#24404d;--accent:#ff8a73;--card:#10242f}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.6 Georgia,"Times New Roman",serif}
+main{max-width:720px;margin:0 auto;padding:40px 16px 64px}
+h1{font:700 30px/1.2 "Courier New",monospace;letter-spacing:.02em;margin:0 0 6px}
+.sub{color:var(--soft);margin:0 0 28px;font-size:15px}
+h2{font:700 15px/1.3 "Courier New",monospace;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);margin:32px 0 8px;border-top:1px solid var(--rule);padding-top:20px}
+ul{padding-left:22px;margin:8px 0}
+li{margin:4px 0}
+code{font:14px "Courier New",monospace;background:var(--card);border:1px solid var(--rule);padding:1px 5px;border-radius:3px}
+a{color:var(--accent)}
+.card{background:var(--card);border:1px solid var(--rule);border-radius:6px;padding:14px 18px;margin:16px 0}
+footer{margin-top:40px;color:var(--soft);font-size:14px}
+</style>
+</head>
+<body>
+<main>
+<h1>Play stats and your privacy</h1>
+<p class="sub">Jimothy: Rain City Rumble &middot; the <a href="./">sightings board</a> &middot; R3Z Games</p>
+
+<div class="card">The short version: play stats are <b>off unless you turn them on</b>. If you do, the game sends anonymous counts (runs, captures, snacks, trophies) tied to a random id that isn't linked to you. No names, no email, no account, no IP addresses stored. Turn it off any time and your id is deleted from the game.</div>
+
+<h2>Opt-in only</h2>
+<p>The first time you start a game, Jimothy asks once: <i>Share anonymous play stats?</i> Nothing is recorded or sent unless you say yes. You can change your answer whenever you like in <b>Settings &gt; Gameplay &gt; Share anonymous play stats</b>.</p>
+
+<h2>What is sent</h2>
+<p>Only gameplay counts, in small batches about once a minute while you play:</p>
+<ul>
+<li>When a session starts: the platform (web, Windows, Mac or Linux), the game version, whether it's the demo, and Arcade or Explorer mode.</li>
+<li>When you start a level, and how far along Ballard you get (which stretch of the street you reach).</li>
+<li>Captures: which level, what caught Jimothy (an officer, a fall, the water, a dog, a drone) and roughly where.</li>
+<li>Rescues: which friend was freed and how many seconds of play it took.</li>
+<li>Trophies, by their id, when you earn them.</li>
+<li>Once a minute of play: the minutes played and how many snacks, bins tipped, gulls, cats woken and pounces happened in that minute.</li>
+</ul>
+
+<h2>The random id</h2>
+<p>When you opt in, the game makes a random id (a UUID such as <code>3f2b8c1e-&hellip;</code>) so the board can count unique players and returns. It is generated on your device, is not derived from anything about you or your device, and is not linked to any account. On the web it is also kept in your browser's local storage (<code>jimothy:install_id</code>) so the board's <i>Include my own sightings</i> box can find your own plays.</p>
+
+<h2>What is never collected</h2>
+<ul>
+<li>No names, emails, accounts, save files, or anything you type.</li>
+<li>No IP addresses or browser user agents are stored. (Like any website, the network sees your address while delivering a request; the stats service does not keep it, and its request logs are turned off.)</li>
+<li>No advertising or tracking cookies, no third-party analytics, nothing sold or shared.</li>
+</ul>
+
+<h2>Turning it off</h2>
+<p>Switch off <b>Settings &gt; Gameplay &gt; Share anonymous play stats</b>. The game stops sending at once, deletes anything still waiting to be sent, and deletes your random id. If you switch it back on later, you get a brand-new id, unconnected to the old one.</p>
+
+<h2>Where it goes and how long it's kept</h2>
+<p>The counts go to a small stats service run by R3Z Games on Cloudflare, and are shown in aggregate on the public <a href="./">sightings board</a>. Raw events are deleted automatically after 400 days. Because the id is random and not linked to you, we can't look up or tell anyone who you are from it. If you'd like the events for an id removed, email us the id (on the web it is in local storage as above; on desktop it is the <code>id</code> line under <code>[stats]</code> in the game's settings.cfg).</p>
+
+<h2>Contact</h2>
+<p>Questions: <a href="mailto:hello@r3zgames.com">hello@r3zgames.com</a></p>
+
+<footer>R3Z Games &middot; Jimothy: Rain City Rumble &middot; Last updated November 2026</footer>
+</main>
+</body>
+</html>
