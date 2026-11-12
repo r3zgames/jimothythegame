@@ -1,0 +1,1530 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Rain City Animal Control · Jimothy: Rain City Rumble</title>
+<meta name="description" content="The sightings records of Rain City Animal Control's Ballard field office: who's playing Jimothy: Rain City Rumble, where he strikes, and how often he gets away. Live, anonymous play stats.">
+<meta name="theme-color" content="#23202E">
+<link rel="canonical" href="https://jimothythegame.com/stats/">
+<link rel="icon" href="/stats/favicon.ico" sizes="16x16 32x32">
+<link rel="icon" type="image/png" sizes="32x32" href="/stats/icon-32.png">
+<link rel="icon" type="image/png" sizes="512x512" href="/stats/icon-512.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/stats/apple-touch-icon.png">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Jimothy: Rain City Rumble">
+<meta property="og:title" content="Rain City Animal Control · Jimothy: Rain City Rumble">
+<meta property="og:description" content="The sightings records of Rain City Animal Control's Ballard field office: who's playing Jimothy: Rain City Rumble, where he strikes, and how often he gets away. Live, anonymous play stats.">
+<meta property="og:url" content="https://jimothythegame.com/stats/">
+<meta property="og:image" content="https://jimothythegame.com/stats/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Rain City Animal Control's Ballard field office in pixel art, cut away like a dollhouse at blue hour in the rain: the sightings board and evidence room upstairs, dispatch and Chief Mulch's office on the ground floor, the holding cages in the basement, the Animal Control truck in the yard, and Jimothy the raccoon at the basement window">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Rain City Animal Control · Jimothy: Rain City Rumble">
+<meta name="twitter:description" content="The sightings records of Rain City Animal Control's Ballard field office: who's playing Jimothy: Rain City Rumble, where he strikes, and how often he gets away. Live, anonymous play stats.">
+<meta name="twitter:image" content="https://jimothythegame.com/stats/og.jpg">
+<link rel="preconnect" href="https://stats.jimothythegame.com">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,400;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
+<link rel="preload" as="image" href="a/cutaway-1x.a73c913d6d.webp" imagesrcset="a/cutaway-1x.a73c913d6d.webp 1x, a/cutaway-2x.d87ef1af12.webp 2x, a/cutaway-3x.c55d6f8f09.webp 3x">
+<style>
+/* Rain City Animal Control, the Ballard field office's sightings records (docs/STATS_OFFICE.md; the design system is tools/stats_office/DESIGN.md).
+   One kit, taken from the game: its night palette, its ink plates with a thin
+   gold rim, its title-menu pixel capitals (drawn from ui/title_menu_skin.gd)
+   and its UI face (Open Sans). Gold = yours / active / the way back to the game,
+   amber-orange = rewards, red = alerts only, teal = links, green enamel = the department. */
+:root{
+  /* foundation and surfaces (the game's blue-hour street and its UI plates) */
+  --night:#121428; --night-2:#171a33; --road:#191C33;
+  --plate:#1B1825; --plate-deep:#12101B; --plate-hi:#23202E; --plate-line:rgba(242,194,48,.42); --hair:rgba(244,239,230,.12);
+  /* text */
+  --cream:#FFF0CC; --paper:#F4EFE6; --dim:#ADB3D1; --muted:#8A8FAD;
+  /* accents with meaning */
+  --gold:#F2C230; --gold-deep:#B8891A; --amber:#FFCC66; --orange:#F08A24; --teal:#4FB3A9; --danger:#E5484D;
+  --enamel:#1D3A31; --enamel-hi:#2C5546; --enamel-lo:#11231D; --sodium:#E8A15A; --outline:#0F0E17;
+  /* data: three series that stay apart (hue and lightness, plus dashes); rewards keep the orange-gold ramp */
+  --c1:#E8A15A; --c2:#4FB3A9; --c3:#ADB3D1;
+  /* type: the game's UI face for everything set in type; display lettering is drawn (pix()) */
+  --f-ui:"Open Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+
+  /* geometry and motion */
+  --r-plate:6px; --r-ctl:4px; --r-chip:3px;
+  --shadow:0 3px 8px rgba(0,0,6,.55);
+  --t-press:120ms; --t-panel:240ms; --ease:cubic-bezier(.2,.7,.2,1);
+  --wrap:1320px; --gut:24px;
+  --mastH:64px; --dirH:64px; --px:7px;
+}
+*{box-sizing:border-box}
+html{scroll-padding-top:calc(var(--mastH) + 16px);background:var(--night)}
+body{margin:0;background:var(--night);color:var(--cream);font:400 16px/1.55 var(--f-ui);-webkit-text-size-adjust:100%;-webkit-font-smoothing:antialiased}
+a{color:inherit}
+button{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--gold);outline-offset:3px;border-radius:2px}
+[tabindex="-1"]:focus{outline:none}
+.vh{position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.px{image-rendering:pixelated;image-rendering:crisp-edges}
+.skip{position:absolute;left:8px;top:-60px;z-index:50;background:var(--gold);color:var(--plate-deep);padding:10px 14px;font-weight:700;border-radius:var(--r-ctl)}
+.skip:focus{top:8px}
+.wrap{max-width:calc(var(--wrap) + 2 * var(--gut));margin:0 auto;padding:0 var(--gut)}
+svg.pix{display:block;width:calc(var(--w) * var(--px));height:auto;shape-rendering:crispEdges;overflow:visible}
+.ico{display:inline-block;flex:none;width:36px;height:36px;background:url(a/icons.0229c229c8.png) no-repeat;background-size:288px 36px}
+.i-face{background-position:0 0}.i-file{background-position:-36px 0}.i-crew{background-position:-72px 0}.i-food{background-position:-108px 0}
+.i-shiny{background-position:-144px 0}.i-ko{background-position:-180px 0}.i-phone{background-position:-216px 0}.i-curio{background-position:-252px 0}
+
+/* ---------- controls (one family: primary gold, secondary plate, utility text) ---------- */
+.btn-primary,.btn-plate{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:48px;padding:0 20px;border-radius:var(--r-ctl);
+  font:800 15px/1 var(--f-ui);letter-spacing:.06em;text-transform:uppercase;text-decoration:none;cursor:pointer;position:relative;top:0;
+  transition:top var(--t-press) var(--ease),box-shadow var(--t-press) var(--ease),background-color var(--t-press) var(--ease)}
+.btn-primary{background:var(--gold);color:var(--plate-deep);box-shadow:inset 0 -3px 0 var(--gold-deep),0 2px 0 var(--outline)}
+.btn-primary:hover{background:#FFD24A}
+.btn-primary:active{top:2px;box-shadow:inset 0 -1px 0 var(--gold-deep),0 0 0 var(--outline)}
+.btn-primary .dn{width:8px;height:8px;border-right:2px solid currentColor;border-bottom:2px solid currentColor;transform:translateY(-2px) rotate(45deg)}
+.btn-plate{background:var(--plate);color:var(--cream);border:1px solid var(--plate-line);box-shadow:0 2px 0 var(--outline)}
+.btn-plate:hover{background:var(--plate-hi);border-color:var(--gold)}
+.btn-plate:active{top:2px;box-shadow:none}
+@media (prefers-reduced-motion:reduce){.btn-primary,.btn-plate{transition:none}}
+
+/* ---------- masthead: the office's front desk sign, every page ---------- */
+.mast{position:sticky;top:0;z-index:30;height:var(--mastH);background:rgba(18,16,27,.94);border-bottom:1px solid var(--plate-line);box-shadow:0 4px 16px rgba(0,0,6,.45)}
+.mast .wrap{height:100%;display:flex;align-items:center;gap:20px;max-width:none;padding:0 max(var(--gut),env(safe-area-inset-left))}
+.brand{display:flex;align-items:center;gap:12px;text-decoration:none;min-width:0;flex:0 1 auto}
+.brand .bt{min-width:0}.brand b,.brand small{overflow:hidden;text-overflow:ellipsis}
+.brand .seal{width:40px;height:40px;flex:none;border-radius:50%;box-shadow:0 2px 6px rgba(0,0,6,.5)}
+.brand b{display:block;font:800 15px/1.1 var(--f-ui);letter-spacing:.14em;text-transform:uppercase;color:var(--cream);white-space:nowrap}
+.brand small{display:block;font:600 12px/1.2 var(--f-ui);letter-spacing:.04em;color:var(--dim);white-space:nowrap;margin-top:3px}
+.mast nav{margin-left:auto;min-width:0}
+.dir ul{display:flex;gap:2px;list-style:none;margin:0;padding:0}
+.dir a{display:flex;align-items:center;gap:7px;height:44px;padding:0 10px;font:700 13px/1 var(--f-ui);letter-spacing:.08em;text-transform:uppercase;
+  text-decoration:none;color:var(--cream);border-radius:var(--r-ctl);white-space:nowrap;transition:color var(--t-press) var(--ease)}
+.dir a:hover{color:var(--amber)}
+.dir a[aria-current="page"]{color:var(--gold)}
+.paw{width:14px;height:12px;flex:none;shape-rendering:crispEdges;fill:currentColor;opacity:0;margin-left:-4px}
+.dir a[aria-current="page"] .paw{opacity:1}
+.mast .btn-primary{min-height:40px;padding:0 16px;font-size:13px;flex:none}
+@media (max-width:1399px){.dir a{padding:0 7px;letter-spacing:.04em;font-size:12px}.mast .wrap{gap:12px}.brand b{letter-spacing:.08em}}
+.status{display:inline-flex;align-items:center;gap:8px;font:700 12px/1.2 var(--f-ui);letter-spacing:.1em;text-transform:uppercase;white-space:nowrap;color:var(--dim)}
+.status i{width:9px;height:9px;border-radius:50%;background:#6d6680;flex:none}
+.status[data-s="live"] i{background:var(--danger);box-shadow:0 0 0 3px rgba(229,72,77,.22)}
+.status[data-s="stale"] i{background:var(--orange)}
+.status[data-s="sample"] i{background:var(--teal)}
+
+/* compact directory (under 1100) */
+.pdir{display:none}
+@media (max-width:1099px){
+  .mast nav{display:none}.mast .about{margin-left:auto}
+  .pdir{display:block;position:sticky;top:var(--mastH);z-index:29;background:rgba(18,16,27,.96);border-bottom:1px solid var(--hair)}
+  .pdir ul{display:flex;gap:4px;overflow-x:auto;list-style:none;margin:0;padding:6px 12px;scrollbar-width:none}
+  .pdir ul::-webkit-scrollbar{display:none}
+  .pdir a{flex:none;height:44px;padding:0 12px;border:1px solid transparent}
+  .pdir a[aria-current="page"]{border-color:var(--plate-line);background:var(--plate)}
+  html{scroll-padding-top:128px}
+}
+@media (max-width:599px){
+  :root{--mastH:56px;--gut:16px;--px:5px}
+  .mast .wrap{gap:10px}
+  .brand .seal{width:32px;height:32px}
+  .brand b{font-size:12px;letter-spacing:.05em}.mast .about{padding:0 12px;min-height:40px}.brand small{font-size:11px}.brand .bf{display:none}
+  .mast .btn-primary{padding:0 12px;min-height:40px}
+  .mast .btn-primary .lbl-long{display:none}
+}
+@media (max-width:359px){:root{--px:4px}.brand b{font-size:12px;letter-spacing:.04em}.mast .about{padding:0 10px}.seg-b{padding:0 8px;min-width:0;font-size:11px;letter-spacing:.03em}}
+@media (min-width:600px){.mast .btn-primary .lbl-short{display:none}}
+
+/* ---------- notices (failed, stale, sample, your game) ---------- */
+.notice{max-width:calc(var(--wrap) + 2 * var(--gut));margin:0 auto;padding:10px var(--gut);display:flex;flex-wrap:wrap;align-items:center;gap:10px 16px;font:600 15px/1.4 var(--f-ui);
+  background:#2c1c24;border-bottom:1px solid var(--danger)}
+.notice[data-kind="stale"]{background:#2e2618;border-color:var(--orange)}
+.notice[data-kind="sample"]{background:#16292a;border-color:var(--teal)}
+.notice[data-kind="you"]{background:#2b2514;border-color:var(--gold)}
+.notice p{margin:0;flex:1 1 320px}
+.btn-text{display:inline-flex;align-items:center;gap:6px;min-height:44px;padding:0 4px;background:none;border:0;cursor:pointer;
+  font:700 13px/1 var(--f-ui);letter-spacing:.08em;text-transform:uppercase;color:var(--teal);text-decoration:none;transition:color var(--t-press) var(--ease)}
+.btn-text:hover{color:var(--amber)}
+.btn-text:active{transform:translateY(1px)}
+[aria-busy="true"].btn-plate,[aria-busy="true"].btn-text{opacity:.7;cursor:progress}
+button:disabled,.btn-plate:disabled{opacity:.45;cursor:not-allowed;box-shadow:none}
+/* the reporting period: one segmented control, the game's gold for the chosen one */
+.seg{display:inline-flex;gap:2px;padding:3px;border-radius:var(--r-ctl);background:var(--plate-deep);border:1px solid var(--hair)}
+.seg-b{position:relative;min-height:38px;min-width:44px;padding:0 12px;border:0;border-radius:3px;background:transparent;cursor:pointer;
+  font:700 12px/1 var(--f-ui);letter-spacing:.06em;text-transform:uppercase;color:var(--dim);white-space:nowrap;
+  transition:background-color var(--t-press) var(--ease),color var(--t-press) var(--ease)}
+.seg-b:hover{color:var(--cream);background:var(--plate-hi)}
+.seg-b:active{transform:translateY(1px)}
+.seg-b[aria-pressed="true"]{background:var(--gold);color:var(--plate-deep);box-shadow:inset 0 -2px 0 var(--gold-deep)}
+.seg-b[aria-busy="true"]::after{content:"";position:absolute;left:30%;right:30%;bottom:4px;height:2px;border-radius:1px;background:currentColor;opacity:.6}
+@media (prefers-reduced-motion:no-preference){.seg-b[aria-busy="true"]::after{animation:busy .8s ease-in-out infinite alternate}}
+@keyframes busy{from{transform:scaleX(.3)}to{transform:scaleX(1)}}
+.seg.big{display:flex}.seg.big .seg-b{flex:1;min-height:44px}
+@media (pointer:coarse){.seg-b{min-height:44px}}
+@media (max-width:599px){.sec-meta .seg,.rh-tools .seg{display:flex;width:100%}.sec-meta .seg-b,.rh-tools .seg-b{flex:1 1 0;min-width:0;padding:0 4px}}
+
+.view{display:none}.view.on{display:block}
+
+/* ---------- shared heads ---------- */
+.kicker{display:flex;align-items:center;flex-wrap:wrap;gap:4px 12px;margin:0 0 6px;font:800 12px/1.3 var(--f-ui);letter-spacing:.22em;text-transform:uppercase;color:var(--gold)}
+.kicker b{font-weight:800;color:var(--dim);letter-spacing:.12em}
+.sec-sub{margin:6px 0 0;max-width:62ch;color:var(--dim);font-size:15px}
+.tick{display:inline-flex;align-items:center;gap:6px;min-height:28px;padding:0 10px;border-radius:var(--r-chip);background:rgba(242,194,48,.14);border:1px solid rgba(242,194,48,.5);
+  font:800 12px/1 var(--f-ui);letter-spacing:.08em;text-transform:uppercase;color:var(--amber);white-space:nowrap}
+.sparkbox{position:relative;display:block;margin:16px 0 0}
+.spark{display:block;width:100%;height:40px;overflow:visible}
+.spark .ln{fill:none;stroke:var(--dim);stroke-width:1.5;vector-effect:non-scaling-stroke;stroke-linejoin:round}
+.spark .ar{fill:rgba(173,179,209,.10)}
+.spark .bl{stroke:var(--hair);stroke-width:1;vector-effect:non-scaling-stroke}
+.spark.bars rect{fill:var(--c1)}
+.spark-cap{display:flex;justify-content:space-between;gap:8px;margin:6px 0 0;font:600 12px/1.3 var(--f-ui);color:var(--muted)}
+.spark-cap b{color:var(--dim);font-variant-numeric:tabular-nums}
+.dot{position:absolute;width:7px;height:7px;border-radius:50%;background:var(--gold);transform:translate(-50%,-50%);box-shadow:0 0 0 2px var(--plate)}
+.skel{display:inline-block;min-width:2.2ch;color:transparent!important;background:linear-gradient(90deg,rgba(244,239,230,.07),rgba(244,239,230,.14),rgba(244,239,230,.07));border-radius:3px}
+.sign-off svg.pix{--px:3px;opacity:.55}
+
+/* ---------- one place: the app fills the screen below the masthead ---------- */
+html,body{height:100%}
+body{overflow:hidden}
+#app{position:fixed;left:0;right:0;bottom:0;top:var(--mastH);overflow:hidden;background:#0c0e1f}
+@media (max-width:1099px){#app{top:calc(var(--mastH) + 57px)}}
+.vp{position:absolute;inset:0;overflow:hidden;touch-action:manipulation}
+/* the letterbox: the same painting, dark and soft, so the edges of the frame are never flat bars */
+.backdrop{position:absolute;inset:-40px;overflow:hidden;pointer-events:none}
+.backdrop img{width:100%;height:100%;object-fit:cover;filter:blur(24px) brightness(.38) saturate(.9);transform:scale(1.08)}
+.world{position:absolute;left:0;top:0;width:1440px;height:1080px;transform-origin:0 0;--s:1}
+.world.moving{transition:transform .56s cubic-bezier(.65,0,.3,1)}
+.world.moving .room .tag{opacity:0;transition:none}
+@media (prefers-reduced-motion:reduce){.world.moving{transition:none}}
+.world img.art{position:absolute;left:0;top:0;width:1440px;height:1080px;max-width:none;box-shadow:0 0 80px rgba(0,0,6,.6)}
+.sprite{position:absolute;pointer-events:none;background-repeat:no-repeat;background-position:0 0;z-index:2}
+.sprite.flip{transform:scaleX(-1)}
+.sprite.hd{image-rendering:auto}
+@media (prefers-reduced-motion:no-preference){.sprite.anim{animation:strip var(--t) steps(var(--n)) infinite}}
+@keyframes strip{to{background-position:calc(var(--n) * var(--w) * -1) 0}}
+.shadow{position:absolute;height:7px;border-radius:50%;background:radial-gradient(closest-side,rgba(8,6,16,.72),rgba(8,6,16,.42) 55%,rgba(8,6,16,0));pointer-events:none;z-index:1}
+.beam{position:absolute;width:160px;height:90px;pointer-events:none;z-index:3;mix-blend-mode:screen;clip-path:polygon(100% 38%,0 0,0 100%,100% 52%);
+  background:linear-gradient(to left,rgba(255,236,170,.55),rgba(255,236,170,.12) 70%,rgba(255,236,170,0))}
+.world .roomhd{position:absolute;max-width:none;opacity:0;transition:opacity .3s;pointer-events:none}
+.world .roomhd.on.ready{opacity:1}
+@media (prefers-reduced-motion:reduce){.world .roomhd{transition:none}}
+.world .sprite{image-rendering:auto}
+.world.px .sprite:not(.hd){image-rendering:pixelated;image-rendering:crisp-edges}
+.world .ov{position:absolute;pointer-events:none}
+.signnum{display:flex;justify-content:center}.signnum svg.pix{--px:5px}
+/* the LIVE lamp sits exactly on the dispatch radio's painted status light (art 365.5..370.5, 682..685.5): dark when not live */
+.livelamp{width:5px;height:3.5px;border-radius:.6px;background:#3a1416}
+.livelamp.on{background:#ff4d4d;box-shadow:0 0 2px .5px rgba(255,90,90,.85)}
+/* rooms: real links; their tags stay a readable size at any camera scale */
+.room{position:absolute;display:block;border-radius:2px;text-decoration:none;color:var(--cream);outline-offset:-3px;transition:box-shadow var(--t-press) var(--ease)}
+.room:hover{box-shadow:inset 0 0 0 calc(2px / var(--s)) rgba(242,194,48,.85),inset 0 0 0 9999px rgba(242,194,48,.06)}
+.room:focus-visible{outline:calc(3px / var(--s)) solid var(--gold)}
+.room .tag{position:absolute;left:calc(6px / var(--s));top:calc(6px / var(--s));display:flex;align-items:center;gap:calc(6px / var(--s));
+  font:800 calc(12px / var(--s))/1 var(--f-ui);letter-spacing:.1em;text-transform:uppercase;color:var(--cream);
+  background:rgba(18,16,27,.92);border:calc(1px / var(--s)) solid var(--plate-line);border-radius:calc(3px / var(--s));padding:calc(7px / var(--s)) calc(9px / var(--s));white-space:nowrap;transition:opacity .3s}
+.room .tag kbd{font:800 calc(10px / var(--s))/1 var(--f-ui);color:var(--plate-deep);background:var(--gold);border-radius:calc(2px / var(--s));padding:calc(2px / var(--s)) calc(4px / var(--s))}
+.room:hover .tag,.room:focus-visible .tag{border-color:var(--gold);color:var(--gold);transform:translateY(calc(-2px / var(--s)))}
+.room .tag{transition:transform var(--t-press) var(--ease),opacity .3s}
+@media (prefers-reduced-motion:reduce){.room:hover .tag,.room:focus-visible .tag{transform:none}}
+.world.zoomed .room.here{pointer-events:none}
+.world.zoomed .room.here .tag{opacity:0}
+.world.zoomed .room:not(.here) .tag{opacity:.75}
+.room .tag.short .nm{display:none}
+@media (max-width:899px){.world.zoomed .room:not(.here) .tag{opacity:0}}
+.world .dim{position:absolute;z-index:5;background:rgba(10,9,20,.72);opacity:0;pointer-events:none;transition:opacity .4s}
+.world.zoomed .dim{opacity:1;pointer-events:auto;cursor:zoom-out}
+.world.zoomed .room:not(.here){z-index:6}
+@media (prefers-reduced-motion:reduce){.world .dim,.room .tag{transition:none}}
+
+/* ---------- the dispatch board over the yard (desktop) / the sheet (phones) ---------- */
+.hud{position:absolute;z-index:10;right:24px;top:24px;width:340px;max-height:calc(100% - 48px);overflow:auto;padding:20px;border-radius:var(--r-plate);
+  background:rgba(27,24,37,.96);border:1px solid var(--plate-line);box-shadow:var(--shadow);transition:opacity .3s,transform .3s}
+body.zoomed .hud{opacity:0;transform:translateX(16px);pointer-events:none;visibility:hidden;transition:opacity .25s,transform .25s,visibility 0s .25s}
+.hud-head{display:flex;flex-direction:column;align-items:flex-start;gap:6px;margin:0 0 12px}
+.hud-head .kicker{margin:0}
+.hud-sign,.minisign{display:flex;align-items:center;gap:14px;padding:12px 12px 12px 16px;border-radius:var(--r-plate);text-decoration:none;color:var(--cream);
+  background:var(--enamel);border:2px solid var(--outline);box-shadow:inset 0 1px 0 var(--enamel-hi),inset 0 -3px 0 var(--enamel-lo)}
+.hud-sign:hover{border-color:var(--gold)}
+.ms-t{display:flex;flex-direction:column;gap:4px;flex:1;min-width:0}
+.ms-l{font:800 11px/1.3 var(--f-ui);letter-spacing:.16em;text-transform:uppercase;color:var(--paper)}
+.ms-n{font:600 13px/1.4 var(--f-ui);color:#CFE0D7}.ms-n b{color:var(--amber)}
+.ms-w{display:flex;align-items:center;justify-content:center;min-width:80px;min-height:70px;padding:10px 12px;border-radius:4px;background:var(--plate-deep);box-shadow:inset 0 3px 0 rgba(0,0,0,.55)}
+.ms-w svg.pix{--px:7px}.ms-w .sign-off svg.pix{--px:2px}
+.hud-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:16px 0 0}
+.hud-stats div{display:flex;flex-direction:column;padding-top:10px;border-top:1px solid var(--hair);min-width:0}
+.hud-stats dt{order:2;margin-top:4px;font:800 10.5px/1.3 var(--f-ui);letter-spacing:.1em;text-transform:uppercase;color:var(--dim)}
+.hud-stats dd{order:1;margin:0;font:800 30px/1 var(--f-ui);font-variant-numeric:tabular-nums;color:var(--cream)}
+.hud-stats dd.rw{color:var(--gold)}
+.hud-note{margin:12px 0 0;font:600 13px/1.4 var(--f-ui);color:var(--dim)}
+.hud .seg{display:flex;margin:16px 0 0}.hud .seg-b{flex:1 1 0;min-width:0;padding:0 4px}
+.hud-rooms ul{list-style:none;margin:16px 0 0;padding:12px 0 0;border-top:1px solid var(--hair);display:grid;grid-template-columns:1fr 1fr;gap:4px}
+.hud-rooms a{display:flex;align-items:center;gap:8px;min-height:40px;padding:0 8px;border-radius:var(--r-ctl);text-decoration:none;color:var(--cream);font:700 13px/1.2 var(--f-ui)}
+.hud-rooms a:hover{background:var(--plate-hi);color:var(--amber)}
+.hud-rooms kbd{font:800 10px/1 var(--f-ui);color:var(--plate-deep);background:var(--gold);border-radius:2px;padding:2px 4px}
+.hud-rooms small{margin-left:auto;font:600 11px/1 var(--f-ui);color:var(--muted)}
+.selfnote{display:inline-flex;flex-wrap:wrap;align-items:center;gap:0 8px;font:600 13px/1.4 var(--f-ui);color:var(--amber)}
+.selfnote .btn-text{min-height:32px;font-size:12px}
+@media (pointer:coarse){.selfnote .btn-text,.hud-rooms a{min-height:44px}}
+
+/* ---------- a room's records: docked beside it (desktop) or a sheet below it (phones) ---------- */
+.side{position:absolute;z-index:12;right:0;top:0;bottom:0;width:var(--sideW,460px);display:flex;flex-direction:column;
+  background:#12101B;border-left:1px solid var(--plate-line);box-shadow:-8px 0 24px rgba(0,0,6,.45)}
+@media (max-width:1199px){.side{--sideW:420px}}
+.side[hidden]{display:none}
+@media (prefers-reduced-motion:no-preference){.side:not([hidden]){animation:sideIn .4s cubic-bezier(.2,.7,.2,1)}}
+@keyframes sideIn{from{transform:translateX(24px);opacity:0}to{transform:none;opacity:1}}
+.side-head{padding:20px 24px 16px;border-bottom:1px solid var(--hair)}
+.side-top{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.side-head h1{margin:4px 0 0;font:800 28px/1.15 var(--f-ui);color:var(--cream)}
+.side-head .sec-sub{font-size:14px}
+.side-tools{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px 16px;margin:14px 0 0}
+.zoomout{min-height:40px;padding:0 12px;font-size:12px;gap:8px;white-space:nowrap;flex:none}.zoomout span[aria-hidden]{font-size:20px;line-height:1}
+.side-body{flex:1;overflow:auto;overscroll-behavior:contain;padding:16px 16px 24px}
+.side .docs{display:flex;flex-direction:column;gap:12px;padding:0;max-width:none}
+.side .docs>*{width:100%;align-self:stretch}
+.side .panel{padding:20px}
+.side-nav{display:flex;justify-content:space-between;gap:12px;margin:16px 0 0;padding:12px 4px 0;border-top:1px solid var(--hair)}
+.sheet-grip{display:none}
+/* phones: the board and the records are sheets under the building */
+@media (max-width:899px){
+  .hud{left:0;right:0;top:auto;bottom:0;width:auto;max-height:52%;border-radius:12px 12px 0 0;border-bottom:0;padding:16px 16px 12px}
+  .hud-rooms ul{grid-template-columns:1fr 1fr}
+  .side{left:0;right:0;top:auto;bottom:0;width:auto;height:50%;border-left:0;border-top:1px solid var(--plate-line);border-radius:12px 12px 0 0;box-shadow:0 -8px 24px rgba(0,0,6,.5);transition:height .35s cubic-bezier(.2,.7,.2,1)}
+  .side.expanded{height:88%}
+  @media (prefers-reduced-motion:no-preference){.side:not([hidden]){animation:sheetIn .4s cubic-bezier(.2,.7,.2,1)}}
+  .sheet-grip{display:flex;justify-content:center;align-items:center;width:100%;min-height:28px;padding:0;background:none;border:0;cursor:pointer}
+  .sheet-grip i{width:44px;height:5px;border-radius:3px;background:rgba(244,239,230,.35)}
+  .side-head{padding:4px 16px 12px}.side-head h1{font-size:22px}.side-head .sec-sub{display:none}
+  .side-tools{margin-top:10px}.side-tools .seg{display:flex;width:100%}.side-tools .seg-b{flex:1 1 0;min-width:0;padding:0 4px}
+  .zoomout .lbl{display:none}.zoomout{min-width:44px;min-height:44px;padding:0}
+  .side-body{padding:12px 12px 24px}
+}
+@keyframes sheetIn{from{transform:translateY(40px);opacity:0}to{transform:none;opacity:1}}
+/* about */
+.defs{display:grid;grid-template-columns:1fr;gap:12px;margin:16px 0 0}
+.defs dt{font:700 14px/1.3 var(--f-ui);color:var(--cream)}
+.defs dd{margin:2px 0 0;font:400 14px/1.5 var(--f-ui);color:var(--dim)}
+.about-logo{display:block;margin:16px 0 0;width:200px;height:auto}
+.mast .about{margin-left:12px;flex:none}
+.notices-wrap{position:absolute;z-index:20;left:16px;top:12px;width:min(560px,calc(100% - 32px))}
+.notices-wrap .notice{border-radius:var(--r-plate);border:1px solid;box-shadow:var(--shadow)}
+
+/* ---------- rooms: the same plates, labels and controls everywhere ---------- */
+@keyframes rise{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+/* the records grid */
+.docs{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:16px;padding-top:24px;padding-bottom:16px}
+.panel{grid-column:span 6;position:relative;display:flex;flex-direction:column;min-width:0;padding:24px;border-radius:var(--r-plate);background:var(--plate);border:1px solid var(--plate-line);box-shadow:var(--shadow);color:var(--cream)}
+.panel.w4{grid-column:span 4}.panel.w8{grid-column:span 8}.panel.w12{grid-column:span 12}
+@media (max-width:1023px){.panel,.panel.w4,.panel.w8{grid-column:span 12}}
+@media (max-width:599px){.docs{gap:12px;padding-top:16px}.panel{padding:16px}}
+.ph{margin:0 0 20px}
+.tab{display:inline-flex;align-items:center;margin:0 0 10px;padding:4px 8px;border:1px solid var(--plate-line);border-bottom-color:transparent;border-radius:3px 3px 0 0;
+  background:rgba(242,194,48,.08);font:800 11px/1.2 var(--f-ui);letter-spacing:.16em;text-transform:uppercase;color:var(--gold)}
+.ph h2{margin:0;font:800 22px/1.25 var(--f-ui);color:var(--cream)}
+.psub{margin:6px 0 0;font:400 15px/1.5 var(--f-ui);color:var(--dim);max-width:70ch}
+.panel a{color:var(--teal);text-underline-offset:3px}
+.panel a:hover{color:var(--amber)}
+.panel a.btn-primary,.panel a.btn-primary:hover{color:var(--plate-deep)}
+.btnrow{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:20px 0 0}
+.btnrow.end{justify-content:flex-end}
+.note-small{margin:16px 0 0;font:600 13px/1.5 var(--f-ui);color:var(--dim)}
+.note-small b{color:var(--cream)}
+/* stats: label, value, what it counts */
+.stats{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:20px 24px;margin:0}
+.stats.three,.stats.c3{grid-template-columns:repeat(3,minmax(0,1fr))}
+@media (max-width:767px){.stats.three{grid-template-columns:1fr}}
+.stat{display:flex;flex-direction:column;min-width:0;padding-top:12px;border-top:1px solid var(--hair)}
+.stat dt{order:1;font:800 11px/1.3 var(--f-ui);letter-spacing:.12em;text-transform:uppercase;color:var(--dim)}
+.stat dd{order:2;margin:8px 0 0;font:800 36px/1 var(--f-ui);font-variant-numeric:tabular-nums lining-nums;color:var(--cream);overflow-wrap:anywhere}
+.stat dd small{font:600 15px/1 var(--f-ui);color:var(--dim)}
+.stat dd.sm{font-size:22px;line-height:1.2}
+.stat small{order:3;margin-top:6px;font:600 13px/1.4 var(--f-ui);color:var(--muted)}
+.stat.big dd{font-size:48px}
+.stat.reward dd{color:var(--gold)}
+.stat.you dd{color:var(--gold)}
+@media (max-width:599px){.stats,.stats.c3{grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}.stats.c3 .big{grid-column:1/-1}.stat dd{font-size:30px}.stat.big dd{font-size:38px}}
+/* horizontal bars */
+.hbars{list-style:none;margin:0;padding:0;display:grid;gap:12px}
+.hbars li{display:grid;grid-template-columns:minmax(120px,11em) minmax(0,1fr) auto;align-items:center;gap:6px 14px}
+.hbars .hl{font:600 14px/1.3 var(--f-ui);color:var(--cream);min-width:0}
+.hbars .tr{height:10px;border-radius:2px;background:var(--plate-deep);box-shadow:inset 0 1px 0 rgba(0,0,0,.5);overflow:hidden}
+.hbars .tr i{display:block;height:100%;border-radius:2px;background:var(--c1)}
+.hbars .hv{font:800 16px/1 var(--f-ui);font-variant-numeric:tabular-nums;color:var(--cream);text-align:right;min-width:3ch}
+.hbars .hv small{font:600 12px/1 var(--f-ui);color:var(--muted)}
+.hbars small{grid-column:2/-1;font:600 12px/1.4 var(--f-ui);color:var(--muted)}
+.hbars li.rw .tr i{background:linear-gradient(90deg,var(--orange),var(--gold))}
+.hbars li.you .tr{box-shadow:inset 0 0 0 1px var(--gold)}
+.hbars.suspects li{grid-template-columns:48px minmax(100px,9em) minmax(0,1fr) auto}
+.hbars.suspects small{grid-column:3/-1}
+.mugs{width:48px;height:60px;background:url(a/suspects.e79f34fab3.webp) no-repeat;background-size:288px 60px;image-rendering:pixelated;border-radius:3px;background-color:var(--plate-deep)}
+@media (max-width:599px){.bags{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.bag{padding:12px}.bag .how{font-size:12px}.bag .bt{position:static;align-items:flex-start;flex-direction:row;flex-wrap:wrap}
+  .tabs{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none}.tabs button{flex:none;padding:0 12px}
+  .hbars li{grid-template-columns:minmax(0,1fr) auto}.hbars .tr{grid-column:1/-1;grid-row:2}.hbars small{grid-column:1/-1}
+  .hbars.suspects li{grid-template-columns:48px minmax(0,1fr) auto}.hbars.suspects .tr{grid-column:2/-1}.hbars.suspects small{grid-column:2/-1}}
+/* empty, offline, loading */
+.note-empty{display:flex;align-items:center;flex-wrap:wrap;gap:12px 16px;margin:0 0 16px;padding:16px;border-radius:4px;background:var(--plate-deep);border:1px dashed rgba(244,239,230,.18)}
+.note-empty p{margin:0;flex:1 1 240px;font:600 14px/1.5 var(--f-ui);color:var(--dim)}
+.note-empty p b{color:var(--cream)}
+.note-empty .ico{width:36px;height:36px;opacity:.75}
+.note-empty.err{border-color:rgba(229,72,77,.45)}
+.note-empty.wide{margin-bottom:16px}
+.skel-block{display:block;margin:0 0 12px;border-radius:4px;background:linear-gradient(90deg,rgba(244,239,230,.05),rgba(244,239,230,.10),rgba(244,239,230,.05));background-size:200% 100%}
+@media (prefers-reduced-motion:no-preference){.skel-block,.skel{animation:shimmer 1.4s linear infinite}}
+@keyframes shimmer{from{background-position:100% 0}to{background-position:-100% 0}}
+.skel{background-size:200% 100%!important}
+/* in-world marks, used sparingly */
+/* one stamp system: the same size, border, tilt and centred caps everywhere (report, crew, memo) */
+.stamp{display:inline-flex;align-items:center;justify-content:center;align-self:flex-start;min-width:72px;margin:20px 0 0;padding:4px 10px 3px;border:2px solid currentColor;border-radius:3px;transform:rotate(-3deg);
+  font:800 13px/1.2 var(--f-ui);letter-spacing:.16em;text-transform:uppercase;color:var(--dim);opacity:.92;text-indent:.16em; /* the caps' trailing tracking, balanced so the word is centred */}
+.stamp.hot,.stamp.caged{color:#F07C6C}
+.stamp.free{color:var(--gold)}
+.stamp.sealed{color:var(--muted)}
+.yours{display:inline-block;font:800 11px/1 var(--f-ui);letter-spacing:.08em;text-transform:uppercase;background:var(--gold);color:var(--plate-deep);padding:4px 6px;border-radius:3px;vertical-align:middle}
+.yourres{display:flex;flex-direction:column;gap:4px;margin:16px 0 0;padding:12px 14px;border-radius:4px;background:rgba(242,194,48,.10);border-left:3px solid var(--gold);font:600 15px/1.4 var(--f-ui);color:var(--cream)}
+.yourres small{font-size:13px;color:var(--dim)}
+.fieldnote{display:flex;align-items:baseline;flex-wrap:wrap;gap:4px 10px;margin:20px 0 0;font:italic 400 15px/1.5 var(--f-ui);color:var(--amber)}
+.fieldnote .paw{width:12px;height:10px;opacity:1;margin:0;align-self:center;fill:var(--amber)}
+.fieldnote small{font:700 11px/1 var(--f-ui);font-style:normal;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.wanted-art{display:flex;justify-content:center;padding:16px 0 4px;border-radius:4px;background:var(--plate-deep)}
+.jimstill{display:block;background-repeat:no-repeat;background-position:0 0;image-rendering:pixelated;transform:scale(2);transform-origin:50% 100%;margin-top:94px}
+.memo .stamp{margin-top:0}
+/* charts */
+.chart{min-width:0}
+.ch-meta{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:8px 16px;margin:0 0 12px}
+.legend{display:flex;flex-wrap:wrap;gap:6px 16px}
+.lg{display:inline-flex;align-items:center;gap:8px;font:700 13px/1.2 var(--f-ui);color:var(--cream)}
+.lg i{display:inline-block;width:18px;height:3px;border-radius:2px;background:var(--c1)}
+.lg.bar i{width:10px;height:12px;border-radius:1.5px}
+.lg.dash i{background:repeating-linear-gradient(90deg,currentColor 0 5px,transparent 5px 8px)}
+.lg.c1 i{background-color:var(--c1)}.lg.c2 i{background-color:var(--c2)}.lg.c3 i{background-color:var(--c3)}
+.lg.c3.dash i{background:repeating-linear-gradient(90deg,var(--c3) 0 5px,transparent 5px 8px)}
+.ch-span{font:600 12px/1.3 var(--f-ui);color:var(--muted)}
+.ch-plot{position:relative;border-radius:4px;background:var(--plate-deep);padding:8px 4px 0;cursor:crosshair;touch-action:pan-y}
+.ch-plot:focus-visible{outline-offset:2px}
+.ch-plot svg{display:block;width:100%;height:auto;overflow:visible}
+.ch-plot text{font:600 11px var(--f-ui);fill:var(--muted)}
+.ch-plot .grid{stroke:rgba(244,239,230,.07)}
+.ch-plot .base{stroke:rgba(244,239,230,.22)}
+.ch-plot polyline{fill:none;stroke-width:2.5;stroke-linejoin:round;stroke-linecap:round}
+.ch-plot polyline.dash{stroke-dasharray:6 5}
+.ch-plot .c1{stroke:var(--c1)}.ch-plot rect.c1,.ch-plot circle.c1{fill:var(--c1);stroke:none}
+.ch-plot .c2{stroke:var(--c2)}.ch-plot rect.c2,.ch-plot circle.c2{fill:var(--c2);stroke:none}
+.ch-plot .c3{stroke:var(--c3)}.ch-plot rect.c3,.ch-plot circle.c3{fill:var(--c3);stroke:none}
+.ch-plot rect{opacity:.88}
+.ch-plot .guide{stroke:var(--gold);stroke-width:1;stroke-dasharray:3 3}
+.ch-tip[hidden]{display:none}
+.ch-tip{position:absolute;top:8px;z-index:3;display:flex;flex-direction:column;gap:4px;min-width:150px;padding:8px 12px;border-radius:4px;background:var(--plate-hi);border:1px solid var(--plate-line);box-shadow:var(--shadow);pointer-events:none;font:600 13px/1.3 var(--f-ui);color:var(--dim)}
+.ch-tip>b{color:var(--cream);font-weight:800}
+.ch-tip .lg{font-weight:600;color:var(--dim)}.ch-tip .lg b{color:var(--cream);margin-left:auto;padding-left:12px;font-variant-numeric:tabular-nums}
+.ch-note{display:flex;align-items:center;gap:8px;margin:10px 0 0;font:600 12px/1.4 var(--f-ui);color:var(--dim)}
+.ch-note .mk{width:8px;height:8px;border-radius:50%;border:2px solid var(--gold);flex:none}
+details.nums{margin:12px 0 0;font:400 14px/1.4 var(--f-ui)}
+details.nums summary{display:inline-flex;align-items:center;min-height:44px;cursor:pointer;font:700 12px/1 var(--f-ui);letter-spacing:.1em;text-transform:uppercase;color:var(--teal)}
+details.nums summary:hover{color:var(--amber)}
+details.nums table{border-collapse:collapse;width:100%;max-width:560px;font-variant-numeric:tabular-nums}
+details.nums th,details.nums td{text-align:left;padding:6px 10px;border-bottom:1px solid var(--hair);color:var(--cream)}
+details.nums thead th{font:800 11px/1.2 var(--f-ui);letter-spacing:.1em;text-transform:uppercase;color:var(--dim)}
+details.nums tbody th{font-weight:600;color:var(--dim)}
+/* buttons in records */
+.sharebtn{display:inline-flex;align-items:center;gap:8px;min-height:40px;padding:0 12px;border:1px solid var(--plate-line);border-radius:var(--r-ctl);background:transparent;cursor:pointer;
+  font:700 12px/1 var(--f-ui);letter-spacing:.08em;text-transform:uppercase;color:var(--cream);transition:border-color var(--t-press) var(--ease),background-color var(--t-press) var(--ease)}
+.sharebtn svg{width:15px;height:15px;color:var(--teal)}
+.sharebtn:hover{border-color:var(--gold);background:var(--plate-hi)}
+.sharebtn:active{transform:translateY(1px)}
+@media (pointer:coarse){.sharebtn{min-height:44px}}
+.shimg{display:block;width:100%;height:auto;border-radius:4px;border:1px solid var(--hair);margin:0}
+/* the sightings board */
+.mapbox{position:relative;margin:0 0 16px;border-radius:4px;overflow:hidden;border:1px solid var(--hair);background:#0f2733;line-height:0}
+.mapbox img{width:100%;height:auto}
+.pin{position:absolute;transform:translate(-50%,-100%);min-width:44px;min-height:44px;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;padding:0;background:none;border:0;cursor:pointer}
+.pin i{width:16px;height:16px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);background:#8a8fad;border:2px solid var(--outline);box-shadow:0 2px 3px rgba(0,0,0,.5)}
+.pin.hot i{background:var(--c1)}.pin.locked i{background:#5c6078}
+.pin.sel i{outline:3px solid var(--gold);outline-offset:2px}
+.pin span{position:absolute;bottom:46px;left:50%;transform:translateX(-50%);white-space:nowrap;font:700 12px/1 var(--f-ui);color:var(--cream);background:rgba(18,16,27,.94);border:1px solid var(--plate-line);border-radius:3px;padding:5px 7px;display:none}
+.pin.sel span,.pin:hover span,.pin:focus-visible span{display:block}
+.hoodlist{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:6px}
+.hoodlist button{width:100%;min-height:44px;display:flex;justify-content:space-between;gap:8px;align-items:center;padding:0 12px;background:var(--plate-deep);border:1px solid var(--hair);border-radius:3px;cursor:pointer;font:600 14px/1.2 var(--f-ui);color:var(--cream)}
+.hoodlist button:hover{border-color:var(--plate-line)}
+.hoodlist button[aria-pressed="true"]{border-color:var(--gold);box-shadow:inset 3px 0 0 var(--gold)}
+.hoodlist .muted{color:var(--muted);font-size:13px}.hoodlist .n{color:var(--c1);font-weight:800}
+.report{align-self:start}
+.rep{margin:0;display:grid;gap:0}
+.rep div{display:grid;grid-template-columns:7em 1fr;gap:8px;padding:10px 0;border-top:1px solid var(--hair)}
+.rep dt{font:800 11px/1.5 var(--f-ui);letter-spacing:.12em;text-transform:uppercase;color:var(--dim)}
+.rep dd{margin:0;font:600 14px/1.4 var(--f-ui);color:var(--cream)}
+.rep b{font:800 20px/1 var(--f-ui);font-variant-numeric:tabular-nums}
+/* holding */
+.lineup{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(132px,1fr));gap:12px}
+.mug{position:relative;width:100%;display:flex;flex-direction:column;align-items:center;gap:8px;padding:12px 8px 14px;background:var(--plate-deep);border:1px solid var(--hair);border-radius:4px;cursor:pointer;color:var(--cream);
+  transition:border-color var(--t-press) var(--ease),transform var(--t-panel) var(--ease)}
+.mug:hover{border-color:var(--plate-line);transform:translateY(-2px)}
+.mug:active{transform:none}
+.mug.lead{border-color:var(--plate-line)}
+.face{display:block;width:108px;height:108px;background-image:url(a/faces.60859a9d8e.webp);background-size:972px 216px;image-rendering:pixelated;background-color:#20263a;border-radius:3px}
+.mug .nm{font:800 15px/1 var(--f-ui)}
+.mug .stamp{margin:0;align-self:center}
+.mug .yours{position:absolute;top:8px;right:8px}
+.mug:not(.lead) .face{filter:saturate(.6) brightness(.8)}
+.intake{display:flex;gap:16px;align-items:flex-start}
+.intake .psub{margin:0}
+/* the kitchen */
+.rcpt{list-style:none;margin:0;padding:0;display:grid}
+.rcpt li{display:grid;grid-template-columns:1fr auto auto;align-items:center;gap:2px 16px;padding:12px 0;border-top:1px solid var(--hair)}
+.rcpt .rl{font:800 12px/1.3 var(--f-ui);letter-spacing:.12em;text-transform:uppercase;color:var(--dim)}
+.rcpt b{font:800 28px/1 var(--f-ui);font-variant-numeric:tabular-nums;color:var(--cream)}
+.rcpt em{grid-column:1/-1;font:italic 400 14px/1.4 var(--f-ui);color:var(--amber)}
+.rcpt .sharebtn{min-height:40px;padding:0 10px}.rcpt .sharebtn span{display:none}
+.rt{display:flex;justify-content:space-between;align-items:baseline;margin:0;padding:14px 0 0;border-top:2px solid var(--plate-line);font:800 13px/1 var(--f-ui);letter-spacing:.14em;text-transform:uppercase;color:var(--gold)}
+.rt b{font:800 34px/1 var(--f-ui);letter-spacing:0;color:var(--gold);font-variant-numeric:tabular-nums}
+.souvs{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}
+.souvs a{display:flex;flex-direction:column;align-items:flex-start;gap:8px;min-height:44px;padding:12px;background:var(--plate-deep);border:1px solid var(--hair);border-radius:4px;text-decoration:none;color:var(--cream)}
+.souvs a:hover{border-color:var(--plate-line)}
+.souvs .sn{font:600 14px/1.35 var(--f-ui);color:var(--cream)}
+.souvs small{font:700 11px/1 var(--f-ui);letter-spacing:.1em;text-transform:uppercase;color:var(--teal)}
+.tico{display:block;flex:none;width:60px;height:60px;background-image:url(a/trophies.c5e9b1f187.webp);background-repeat:no-repeat;image-rendering:pixelated}
+/* evidence: the cabinet's drawers as filing tabs, the bags as tiles */
+.tabs{display:flex;flex-wrap:wrap;gap:4px;margin:0 0 20px;border-bottom:1px solid var(--plate-line)}
+.tabs button{position:relative;top:1px;min-height:44px;padding:0 16px;border:1px solid transparent;border-bottom:0;border-radius:4px 4px 0 0;background:transparent;cursor:pointer;
+  font:700 13px/1 var(--f-ui);letter-spacing:.06em;text-transform:uppercase;color:var(--dim)}
+.tabs button:hover{color:var(--cream)}
+.tabs button[aria-selected="true"]{background:var(--plate);border-color:var(--plate-line);color:var(--gold);box-shadow:inset 0 2px 0 var(--gold)}
+.bags{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px}
+.bag{position:relative;display:flex;flex-direction:column;gap:6px;width:100%;height:100%;text-align:left;cursor:pointer;padding:16px;background:var(--plate-deep);border:1px solid var(--hair);border-radius:4px;color:var(--cream);
+  transition:border-color var(--t-press) var(--ease),transform var(--t-panel) var(--ease)}
+.bag:hover{border-color:var(--plate-line);transform:translateY(-2px)}
+.bag:active{transform:none}
+.bag.none .tico{filter:grayscale(1) opacity(.45)}
+.bag .bt{position:absolute;top:14px;right:12px;display:flex;flex-direction:column;align-items:flex-end;gap:4px}
+.bag .nm{margin-top:4px;font:800 16px/1.2 var(--f-ui)}
+.bag .how{font:400 13px/1.4 var(--f-ui);color:var(--dim)}
+.bag .cnt{margin-top:auto;padding-top:6px;font:600 13px/1.3 var(--f-ui);color:var(--dim)}
+.bag .cnt b{font:800 22px/1 var(--f-ui);color:var(--cream);font-variant-numeric:tabular-nums}
+.bag .tr{display:block;height:6px;border-radius:2px;background:rgba(244,239,230,.06);overflow:hidden}
+.bag .tr i{display:block;height:100%;background:linear-gradient(90deg,var(--orange),var(--gold))}
+.bag .rk{font:800 10px/1 var(--f-ui);letter-spacing:.1em;text-transform:uppercase;color:var(--plate-deep);background:var(--amber);padding:4px 6px;border-radius:3px}
+/* Mulch's office: Form AC-7 */
+.optin{margin:20px 0 0;padding:16px;border-radius:4px;background:var(--plate-deep);border:1px solid var(--hair)}
+.optin .tab{margin-bottom:8px}
+.optin label{display:flex;align-items:center;gap:12px;min-height:44px;cursor:pointer;font:700 15px/1.3 var(--f-ui);color:var(--cream)}
+.optin input{width:22px;height:22px;flex:none;accent-color:var(--gold)}
+.optin input:disabled+span{opacity:.6}
+.optin small{display:block;margin-top:2px;font:400 13px/1.4 var(--f-ui);color:var(--dim)}
+/* sheets */
+dialog{max-width:560px;width:calc(100% - 32px);border:0;padding:0;background:transparent;color:var(--cream)}
+dialog::backdrop{background:rgba(10,8,18,.72)}
+dialog .panel{grid-column:auto}
+@media (prefers-reduced-motion:no-preference){dialog[open] .panel{animation:rise .2s ease-out}}
+
+</style>
+</head>
+<body>
+<a class="skip" href="#hud">Skip to the records</a>
+<header class="mast"><div class="wrap">
+  <a class="brand" href="#overview" aria-label="Rain City Animal Control, Ballard field office: the whole building">
+    <img class="seal" src="a/seal.c0169dca21.png" width="40" height="40" alt="">
+    <span class="bt"><b>Rain City Animal Control</b><small><span class="bf">Ballard Field Office &middot; </span>Jimothy: Rain City Rumble</small></span>
+  </a>
+  <nav class="dir" aria-label="Rooms"><ul id="dirList"></ul></nav>
+  <button type="button" class="btn-plate about" data-about>About</button>
+  <span class="status vh" id="dirStatus" data-s="loading" role="status"><i aria-hidden="true"></i><span>Loading</span></span>
+</div></header>
+<nav class="pdir dir" aria-label="Rooms (compact)"><ul id="pdirList"></ul></nav>
+<main id="app">
+  <h1 class="vh">Rain City Animal Control, Ballard field office: sightings records from Jimothy: Rain City Rumble</h1>
+  <div class="vp" id="vp">
+    <div class="backdrop" id="backdrop" aria-hidden="true"></div>
+    <div class="world" id="world"></div>
+  </div>
+  <section class="hud" id="hud" aria-label="Dispatch: the headline numbers" tabindex="-1"></section>
+  <section class="side" id="side" aria-labelledby="roomTitle" hidden></section>
+  <div class="notices-wrap" id="notices" aria-live="polite"></div>
+</main>
+
+<dialog id="evDlg" aria-labelledby="evTitle"><div class="panel" id="evSheet"></div></dialog>
+<script>
+(() => {
+"use strict";
+/* The Sightings Office (docs/STATS_OFFICE.md, Phase 2): overview, dispatch,
+   Mulch's office and the evidence room over one cutaway (1440 x 1080 art px).
+   Live data from the stats Worker; its address comes from the game's
+   PlayStats.API_BASE (autoload/play_stats.gd) at build time. */
+const API_BASE = "https://stats.jimothythegame.com";
+const Q = new URLSearchParams(location.search);
+const API = (() => { const a = Q.get("api") || ""; return (/^http:\/\/(127\.0\.0\.1|localhost)(:\d+)?$/.test(a) ? a : API_BASE) + "/v1/stats"; })();
+const SAMPLE = {"ranges":{"7":{"0":{"kpi":{"today":3,"escToday":1,"playedToday":3,"week":45,"month":54,"ever":54,"newIn":44,"d1":9,"d1n":[4,43],"d7":0,"d7n":[0,0],"runs":80,"hours":1.3,"active":45},"daily":[3,17,11,7,4,4,3],"roll7":[7,23,32,38,41,44,45],"roll30":[13,30,39,45,49,53,54],"new":[3,17,9,6,4,4,1],"sess":[5,25,19,11,7,7,6],"plat":{"Web":35,"Windows":6,"Mac":2,"Linux":2},"mode":{"Arcade":48,"Explorer":32},"causes":{"Officers":24,"Falls":14,"Drowning":15,"Guard dogs":6,"Drones":6,"Walked away":5},"capsect":[18,13,7,11,4,6,6],"reach":[45,38,30,28,21,19,14],"freed":9,"rescue":252,"rescueN":10,"hood":{"ballard":80},"counter":{"snacks":965,"bins":292,"gulls":49,"cats":30,"pounce":1734},"trophy":{"freed_ballard":20,"shinies_ballard":7,"clean_ballard":2,"secret_room":20,"culvert":18,"catwalk_watch":16,"raccoon_ipa":49,"couple_photo":22,"drone_swat":16,"dog_sulk":11}},"1":{"kpi":{"today":4,"escToday":2,"playedToday":4,"week":46,"month":55,"ever":55,"newIn":44,"d1":9,"d1n":[4,43],"d7":0,"d7n":[0,0],"runs":86,"hours":1.4,"active":46},"daily":[3,18,11,7,4,5,4],"roll7":[8,24,33,39,42,45,46],"roll30":[14,31,40,46,50,54,55],"new":[3,17,9,6,4,4,1],"sess":[5,27,19,11,7,9,8],"plat":{"Web":35,"Windows":6,"Mac":3,"Linux":2},"mode":{"Arcade":53,"Explorer":33},"causes":{"Officers":26,"Falls":15,"Drowning":16,"Guard dogs":7,"Drones":6,"Walked away":5},"capsect":[20,13,10,11,4,6,6],"reach":[46,39,31,29,22,20,15],"freed":10,"rescue":257,"rescueN":11,"hood":{"ballard":86},"counter":{"snacks":1020,"bins":304,"gulls":51,"cats":33,"pounce":1834},"trophy":{"freed_ballard":22,"shinies_ballard":7,"clean_ballard":2,"secret_room":22,"culvert":17,"catwalk_watch":17,"raccoon_ipa":50,"couple_photo":22,"drone_swat":17,"dog_sulk":13}}},"30":{"0":{"kpi":{"today":3,"escToday":1,"playedToday":3,"week":45,"month":54,"ever":54,"newIn":54,"d1":9,"d1n":[5,53],"d7":0,"d7n":[0,10],"runs":97,"hours":1.5,"active":54},"daily":[0,0,0,0,0,0,2,1,0,1,0,1,0,0,1,0,1,1,1,0,1,1,0,3,17,11,7,4,4,3],"roll7":[0,0,0,0,0,0,2,3,3,4,4,5,5,3,3,3,3,3,3,3,4,4,4,7,23,32,38,41,44,45],"roll30":[0,0,0,0,0,0,2,3,3,4,4,5,5,5,6,6,7,7,8,8,9,10,10,13,30,39,45,49,53,54],"new":[0,0,0,0,0,0,2,1,0,1,0,1,0,0,1,0,1,0,1,0,1,1,0,3,17,9,6,4,4,1],"sess":[0,0,0,0,0,0,2,2,0,1,0,2,0,0,2,0,2,1,2,0,1,2,0,5,25,19,11,7,7,6],"plat":{"Web":44,"Windows":6,"Mac":2,"Linux":2},"mode":{"Arcade":57,"Explorer":40},"causes":{"Officers":32,"Falls":17,"Drowning":16,"Guard dogs":6,"Drones":8,"Walked away":6},"capsect":[22,16,8,12,5,8,8],"reach":[54,44,34,31,24,22,18],"freed":11,"rescue":251,"rescueN":12,"hood":{"ballard":97},"counter":{"snacks":1183,"bins":351,"gulls":58,"cats":37,"pounce":2087},"trophy":{"freed_ballard":20,"shinies_ballard":7,"clean_ballard":4,"secret_room":19,"culvert":17,"catwalk_watch":15,"raccoon_ipa":46,"couple_photo":24,"drone_swat":13,"dog_sulk":13}},"1":{"kpi":{"today":4,"escToday":2,"playedToday":4,"week":46,"month":55,"ever":55,"newIn":55,"d1":11,"d1n":[6,54],"d7":9,"d7n":[1,11],"runs":107,"hours":1.7,"active":55},"daily":[0,0,0,0,0,0,2,1,0,1,0,1,0,0,1,0,1,2,2,0,1,1,0,3,18,11,7,4,5,4],"roll7":[0,0,0,0,0,0,2,3,3,4,4,5,5,3,3,3,3,4,4,4,5,5,5,8,24,33,39,42,45,46],"roll30":[0,0,0,0,0,0,2,3,3,4,4,5,5,5,6,6,7,8,9,9,10,11,11,14,31,40,46,50,54,55],"new":[0,0,0,0,0,0,2,1,0,1,0,1,0,0,1,0,1,1,1,0,1,1,0,3,17,9,6,4,4,1],"sess":[0,0,0,0,0,0,2,2,0,1,0,2,0,0,2,0,2,3,4,0,1,2,0,5,27,19,11,7,9,8],"plat":{"Web":44,"Windows":6,"Mac":3,"Linux":2},"mode":{"Arcade":65,"Explorer":42},"causes":{"Officers":37,"Falls":18,"Drowning":17,"Guard dogs":7,"Drones":8,"Walked away":6},"capsect":[25,16,13,12,5,8,8],"reach":[55,45,35,32,25,23,19],"freed":12,"rescue":256,"rescueN":14,"hood":{"ballard":107},"counter":{"snacks":1276,"bins":375,"gulls":61,"cats":40,"pounce":2287},"trophy":{"freed_ballard":22,"shinies_ballard":7,"clean_ballard":4,"secret_room":20,"culvert":16,"catwalk_watch":16,"raccoon_ipa":47,"couple_photo":24,"drone_swat":15,"dog_sulk":15}}},"90":{"0":{"kpi":{"today":3,"escToday":1,"playedToday":3,"week":45,"month":54,"ever":54,"newIn":54,"d1":9,"d1n":[5,53],"d7":0,"d7n":[0,10],"runs":97,"hours":1.5,"active":54},"daily":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,1,0,1,0,1,0,0,1,0,1,1,1,0,1,1,0,3,17,11,7,4,4,3],"roll7":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,3,3,4,4,5,5,3,3,3,3,3,3,3,4,4,4,7,23,32,38,41,44,45],"roll30":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,3,3,4,4,5,5,5,6,6,7,7,8,8,9,10,10,13,30,39,45,49,53,54],"new":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,1,0,1,0,1,0,0,1,0,1,0,1,0,1,1,0,3,17,9,6,4,4,1],"sess":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,2,0,1,0,2,0,0,2,0,2,1,2,0,1,2,0,5,25,19,11,7,7,6],"plat":{"Web":44,"Windows":6,"Mac":2,"Linux":2},"mode":{"Arcade":57,"Explorer":40},"causes":{"Officers":32,"Falls":17,"Drowning":16,"Guard dogs":6,"Drones":8,"Walked away":6},"capsect":[22,16,8,12,5,8,8],"reach":[54,44,34,31,24,22,18],"freed":11,"rescue":251,"rescueN":12,"hood":{"ballard":97},"counter":{"snacks":1183,"bins":351,"gulls":58,"cats":37,"pounce":2087},"trophy":{"freed_ballard":20,"shinies_ballard":7,"clean_ballard":4,"secret_room":19,"culvert":17,"catwalk_watch":15,"raccoon_ipa":46,"couple_photo":24,"drone_swat":13,"dog_sulk":13}},"1":{"kpi":{"today":4,"escToday":2,"playedToday":4,"week":46,"month":55,"ever":55,"newIn":55,"d1":11,"d1n":[6,54],"d7":9,"d7n":[1,11],"runs":107,"hours":1.7,"active":55},"daily":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,1,0,1,0,1,0,0,1,0,1,2,2,0,1,1,0,3,18,11,7,4,5,4],"roll7":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,3,3,4,4,5,5,3,3,3,3,4,4,4,5,5,5,8,24,33,39,42,45,46],"roll30":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,3,3,4,4,5,5,5,6,6,7,8,9,9,10,11,11,14,31,40,46,50,54,55],"new":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,1,0,1,0,1,0,0,1,0,1,1,1,0,1,1,0,3,17,9,6,4,4,1],"sess":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,2,0,1,0,2,0,0,2,0,2,3,4,0,1,2,0,5,27,19,11,7,9,8],"plat":{"Web":44,"Windows":6,"Mac":3,"Linux":2},"mode":{"Arcade":65,"Explorer":42},"causes":{"Officers":37,"Falls":18,"Drowning":17,"Guard dogs":7,"Drones":8,"Walked away":6},"capsect":[25,16,13,12,5,8,8],"reach":[55,45,35,32,25,23,19],"freed":12,"rescue":256,"rescueN":14,"hood":{"ballard":107},"counter":{"snacks":1276,"bins":375,"gulls":61,"cats":40,"pounce":2287},"trophy":{"freed_ballard":22,"shinies_ballard":7,"clean_ballard":4,"secret_room":20,"culvert":16,"catwalk_watch":16,"raccoon_ipa":47,"couple_photo":24,"drone_swat":15,"dog_sulk":15}}},"365":{"0":{"kpi":{"today":3,"escToday":1,"playedToday":3,"week":45,"month":54,"ever":54,"newIn":54,"d1":9,"d1n":[5,53],"d7":0,"d7n":[0,10],"runs":97,"hours":1.5,"active":54},"daily":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,1,0,1,0,1,0,0,1,0,1,1,1,0,1,1,0,3,17,11,7,4,4,3],"roll7":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,3,3,4,4,5,5,3,3,3,3,3,3,3,4,4,4,7,23,32,38,41,44,45],"roll30":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,3,3,4,4,5,5,5,6,6,7,7,8,8,9,10,10,13,30,39,45,49,53,54],"new":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,1,0,1,0,1,0,0,1,0,1,0,1,0,1,1,0,3,17,9,6,4,4,1],"sess":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,2,0,1,0,2,0,0,2,0,2,1,2,0,1,2,0,5,25,19,11,7,7,6],"plat":{"Web":44,"Windows":6,"Mac":2,"Linux":2},"mode":{"Arcade":57,"Explorer":40},"causes":{"Officers":32,"Falls":17,"Drowning":16,"Guard dogs":6,"Drones":8,"Walked away":6},"capsect":[22,16,8,12,5,8,8],"reach":[54,44,34,31,24,22,18],"freed":11,"rescue":251,"rescueN":12,"hood":{"ballard":97},"counter":{"snacks":1183,"bins":351,"gulls":58,"cats":37,"pounce":2087},"trophy":{"freed_ballard":20,"shinies_ballard":7,"clean_ballard":4,"secret_room":19,"culvert":17,"catwalk_watch":15,"raccoon_ipa":46,"couple_photo":24,"drone_swat":13,"dog_sulk":13}},"1":{"kpi":{"today":4,"escToday":2,"playedToday":4,"week":46,"month":55,"ever":55,"newIn":55,"d1":11,"d1n":[6,54],"d7":9,"d7n":[1,11],"runs":107,"hours":1.7,"active":55},"daily":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,1,0,1,0,1,0,0,1,0,1,2,2,0,1,1,0,3,18,11,7,4,5,4],"roll7":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,3,3,4,4,5,5,3,3,3,3,4,4,4,5,5,5,8,24,33,39,42,45,46],"roll30":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,3,3,4,4,5,5,5,6,6,7,8,9,9,10,11,11,14,31,40,46,50,54,55],"new":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,1,0,1,0,1,0,0,1,0,1,1,1,0,1,1,0,3,17,9,6,4,4,1],"sess":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,2,0,1,0,2,0,0,2,0,2,3,4,0,1,2,0,5,27,19,11,7,9,8],"plat":{"Web":44,"Windows":6,"Mac":3,"Linux":2},"mode":{"Arcade":65,"Explorer":42},"causes":{"Officers":37,"Falls":18,"Drowning":17,"Guard dogs":7,"Drones":8,"Walked away":6},"capsect":[25,16,13,12,5,8,8],"reach":[55,45,35,32,25,23,19],"freed":12,"rescue":256,"rescueN":14,"hood":{"ballard":107},"counter":{"snacks":1276,"bins":375,"gulls":61,"cats":40,"pounce":2287},"trophy":{"freed_ballard":22,"shinies_ballard":7,"clean_ballard":4,"secret_room":20,"culvert":16,"catwalk_watch":16,"raccoon_ipa":47,"couple_photo":24,"drone_swat":15,"dog_sulk":15}}}},"sections":["Market St","Marina","Boatyard","Beer garden","Fishing fleet","The Locks","Fish ladder"],"funnelMid":5,"trophies":[["freed_ballard","Locks and Loaded"],["shinies_ballard","Magpie of Market Street"],["clean_ballard","Not a Scratch"],["secret_room","Walls Have Ears"],["culvert","Roll With It"],["catwalk_watch","Time Flies"],["raccoon_ipa","Hoppy Hour"],["couple_photo","Pics or It Didn't Happen"],["drone_swat","Flight Cancelled"],["dog_sulk","Who's a Good Boy?"]]};
+/* The cutaway and the hero are pixel art on the game's 3x grid (1 art px = 1 CSS px), shown pixelated at whole-number scales; so is the cast. */
+const ART = {c1: "a/cutaway-1x.a73c913d6d.webp", c2: "a/cutaway-2x.d87ef1af12.webp", c3: "a/cutaway-3x.c55d6f8f09.webp", map: "a/map.56fab026c9.jpg", mulch6: "a/mulch6.21ed16ed7a.png",
+  rookie: "a/rookie.5cc118f5f2.png", sarge: "a/sarge.8534d7bbb8.png", todd: "a/todd.a67c103e23.png", lou: "a/lou.7359830f39.png", dale: "a/dale.cbda42cde7.png", jim: "a/jim.ecf7be5509.png",
+  logo: "a/logo.ec72051bdf.png", jimIdle: "a/jim_idle.fb515b0b30.png", jim_idle: "a/jim_idle.fb515b0b30.png"};
+/* each room repainted at 6 px per art px: the camera swaps it in over the building when it frames that room */
+const ROOM_HD = {dispatch: "a/room_dispatch-6x.e9d2752793.webp", office: "a/room_office-6x.72fe1a63a7.webp", board: "a/room_board-6x.f96d5fc66f.webp", evidence: "a/room_evidence-6x.b56e598e18.webp", holding: "a/room_holding-6x.42f1275d38.webp", kitchen: "a/room_kitchen-6x.fe6773bc74.webp"};
+
+/* The kit (tools/stats_office/kit.py): Jimothy's idle strip from the game's HD frames. */
+const KIT = {"jim_idle":{"w":83,"h":94,"n":12,"fps":5},"icons":["hud_face","hud_file","hud_crew","hud_food","hud_shiny","hud_face_ko","hud_phone","hud_curio"],"mulch6":{"w":110,"h":313,"density":6}};
+/* The title menu's pixel capitals, read from ui/title_menu_skin.gd at build time. */
+const GLYPHS = {"g":{"A":[".###.","#...#","#...#","#####","#...#","#...#","#...#"],"B":["####.","#...#","#...#","####.","#...#","#...#","####."],"C":[".###.","#...#","#....","#....","#....","#...#",".###."],"D":["####.","#...#","#...#","#...#","#...#","#...#","####."],"E":["#####","#....","#....","####.","#....","#....","#####"],"F":["#####","#....","#....","####.","#....","#....","#...."],"G":[".###.","#...#","#....","#.###","#...#","#...#",".####"],"H":["#...#","#...#","#...#","#####","#...#","#...#","#...#"],"I":["###",".#.",".#.",".#.",".#.",".#.","###"],"J":["..###","...#.","...#.","...#.","...#.","#..#.",".##.."],"K":["#...#","#..#.","#.#..","##...","#.#..","#..#.","#...#"],"L":["#....","#....","#....","#....","#....","#....","#####"],"M":["##...##","###.###","##.#.##","##...##","##...##","##...##","##...##"],"N":["##...##","###..##","####.##","##.####","##..###","##...##","##...##"],"O":[".###.","#...#","#...#","#...#","#...#","#...#",".###."],"P":["####.","#...#","#...#","####.","#....","#....","#...."],"Q":[".###.","#...#","#...#","#...#","#.#.#","#..#.",".##.#"],"R":["####.","#...#","#...#","####.","#.#..","#..#.","#...#"],"S":[".####","#....","#....",".###.","....#","....#","####."],"T":["#####","..#..","..#..","..#..","..#..","..#..","..#.."],"U":["#...#","#...#","#...#","#...#","#...#","#...#",".###."],"V":["#...#","#...#","#...#","#...#","#...#",".#.#.","..#.."],"W":["##...##","##...##","##...##","##.#.##","##.#.##","###.###","##...##"],"X":["#...#","#...#",".#.#.","..#..",".#.#.","#...#","#...#"],"Y":["#...#","#...#",".#.#.","..#..","..#..","..#..","..#.."],"Z":["#####","....#","...#.","..#..",".#...","#....","#####"],"0":[".###.","#..##","#.#.#","#.#.#","##..#","#...#",".###."],"1":[".#.","##.",".#.",".#.",".#.",".#.","###"],"2":[".###.","#...#","....#","...#.","..#..",".#...","#####"],"3":["####.","....#","....#",".###.","....#","....#","####."],"4":["...#.","..##.",".#.#.","#..#.","#####","...#.","...#."],"5":["#####","#....","####.","....#","....#","#...#",".###."],"6":[".###.","#....","#....","####.","#...#","#...#",".###."],"7":["#####","....#","...#.","..#..",".#...",".#...",".#..."],"8":[".###.","#...#","#...#",".###.","#...#","#...#",".###."],"9":[".###.","#...#","#...#",".####","....#","....#",".###."],"?":[".###.","#...#","....#","...#.","..#..",".....","..#.."],":":[".","#",".",".",".","#","."],".":[".",".",".",".",".",".","#"],",":["..","..","..","..","..",".#","#."],"!":["#","#","#","#","#",".","#"],"'":["#","#",".",".",".",".","."],"-":["....","....","....","####","....","....","...."]},"wide":["M","N","W"],"paw":[".#.#.#.",".#.#.#.",".......","..###..",".#####.",".#####."]};
+/* Draws text in the game's title lettering as an SVG (one unit = one glyph pixel; CSS sets
+   the size in whole pixels through --px). Ramps and the 1-pixel shadow are the title menu's. */
+const RAMP = {enamel: r => r < 4 ? "#EBE0CC" : "#CCBA9E", amber: r => r < 2 ? "#FFDB85" : r < 5 ? "#FFB84F" : "#ED8C33"};
+const ZERO = [".###.", "#...#", "#...#", "#...#", "#...#", "#...#", ".###."];
+function pix(text, ramp = "enamel") {
+  const rows = [[], [], [], [], [], [], []]; let x = 0, first = true;
+  for (const ch of String(text).toUpperCase()) {
+    if (!first) x += 1; first = false;
+    if (ch === " ") { x += 4; continue; }
+    /* Stems doubled like the title menu, except M, N and W (the table's WIDE rule). The table's 0 carries a slash that
+       closes into a blot when doubled (it read as a Q); the page draws its zero plain, an open oval. */
+    const g = ch === "0" ? ZERO : GLYPHS.g[ch] || GLYPHS.g["?"], bold = !GLYPHS.wide.includes(ch), w = g[0].length + (bold ? 1 : 0);
+    g.forEach((r, y) => { const lit = new Array(w).fill(0);
+      for (let i = 0; i < r.length; i++) if (r[i] === "#") { lit[i] = 1; if (bold) lit[i + 1] = 1; }
+      for (let i = 0; i < w;) { if (!lit[i]) { i++; continue; } let j = i; while (j < w && lit[j]) j++; rows[y].push(`M${x + i} ${y}h${j - i}v1h${i - j}z`); i = j; } });
+    x += w;
+  }
+  const all = rows.flat().join("");
+  const shadow = all.replace(/M(\d+) (\d+)/g, (m, a, b) => `M${+a + 1} ${+b + 1}`);
+  return `<svg class="pix" viewBox="0 0 ${x + 1} 8" style="--w:${x + 1}" aria-hidden="true" focusable="false"><path fill="rgba(5,8,20,.78)" d="${shadow}"/>`
+    + rows.map((r, y) => `<path fill="${RAMP[ramp](y)}" d="${r.join("")}"/>`).join("") + `</svg>`;
+}
+const PAW = `<svg class="paw" viewBox="0 0 7 6" aria-hidden="true" focusable="false"><path d="${GLYPHS.paw.map((r, y) => [...r].map((c, x) => c === "#" ? `M${x} ${y}h1v1h-1z` : "").join("")).join("")}"/></svg>`;
+const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+const $ = id => document.getElementById(id);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({"&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;"}[c]));
+const fmtN = n => (n == null || isNaN(n)) ? "—" : Number(n).toLocaleString("en-US");
+const mmss = s => s ? `${Math.floor(s / 60)}:${String(Math.round(s % 60)).padStart(2, "0")}` : "—";
+const pick = (...v) => v.find(x => x !== undefined && x !== null);
+const DASH = "—";
+
+/* ---------- the building: rooms in art px (the cutaway is 1440 x 1080) ---------- */
+const ROOMS = [
+  {id: "dispatch", name: "Dispatch", long: "Dispatch / front counter", floor: "Ground floor", r: [166, 500, 626, 800], built: true, focus: 400,
+    blurb: "The public counter: today's headline numbers."},
+  {id: "office", name: "Mulch's office", long: "Chief Mulch's office", floor: "Ground floor", r: [640, 500, 1014, 800], built: true, focus: 790,
+    blurb: "Players, returns, platforms, and the reporting period."},
+  {id: "board", name: "Sightings board", long: "The sightings board", floor: "Upstairs", r: [166, 190, 600, 470], built: true, focus: 380,
+    blurb: "The map of Seattle and the trends."},
+  {id: "evidence", name: "Evidence", long: "Evidence room", floor: "Upstairs", r: [612, 190, 812, 470], built: true, focus: 712,
+    blurb: "Trophies, captures and how he got caught."},
+  {id: "holding", name: "Holding", long: "Holding room", floor: "Basement", r: [166, 826, 760, 1040], built: true, focus: 560,
+    blurb: "Rescues, the funnel and the crew."},
+  {id: "kitchen", name: "Kitchen", long: "Staff kitchenette", floor: "Upstairs", r: [824, 190, 1014, 470], built: true, focus: 919,
+    blurb: "Jimothy's own counter-report."},
+];
+const ROOM = Object.fromEntries(ROOMS.map(r => [r.id, r]));
+const ORDER = ["overview", "dispatch", "office", "board", "evidence", "holding", "kitchen"];
+/* One officer per room, feet on its floor (art px): the rookie dozing at dispatch, the Chief in her office,
+   Sarge at the map, Officer Todd at the evidence shelves, Officer Lou at the fridge, Officer Dale's flashlight
+   on the cages; Jimothy outside at the light well. n frames at fps (the rookie's doze); flip faces left.
+   f = the floor row the soles stand on (assets/floors.json, measured on the cutaway); y puts every frame's lowest
+   opaque row on it. python3 tools/stats_office/feetcheck.py checks both. */
+const SPRITES = [
+  {k: "rookie", x: 253, y: 654, w: 59, h: 148, n: 4, fps: 1.2, f: 801},
+  {k: "mulch6", x: 694, y: 645.5, w: 55, h: 156.5, d: 6, f: 801}, /* the opening's 6x Chief Mulch, half size: 1 sprite px = 1 device px on 2x screens */
+  {k: "sarge", x: 196, y: 328, w: 74, h: 146, f: 473},
+  {k: "todd", x: 628, y: 310, w: 89, h: 164, f: 473},
+  {k: "lou", x: 906, y: 322, w: 100, h: 152, flip: true, f: 473},
+  {k: "dale", x: 616, y: 893, w: 115, h: 150, flip: true, f: 1042, lens: [5, 70]}, /* lens: the flashlight's lens in the (flipped) sprite, where the beam starts */
+  {k: "jim_idle", x: 54, y: 754, w: 83, h: 94, n: 12, fps: 5, f: 847}]; /* Jimothy at the light well: the game's HD idle (kit.py jim_idle.png), still under reduced motion */
+
+/* ---------- copy shared with the corkboard (tools/stats_board/js_part2.html) ---------- */
+const TROPHY_TEXT = {
+  freed_ballard: "Free the friend caged by the Ballard Locks.", shinies_ballard: "Find all five shinies in Ballard.",
+  clean_ballard: "Finish Ballard without losing a life (Arcade).", secret_room: "Find a secret room.",
+  culvert: "Roll through the bent grate into the culvert under the Locks' stair.",
+  catwalk_watch: "Ride the fish hoist up to the catwalk and grab the lost pocket watch.",
+  raccoon_ipa: "Chug the Raccoon IPA someone left on a beer garden table.",
+  couple_photo: "Drop in on the beer garden couple and get your picture taken.",
+  drone_swat: "Swat an Animal Control drone out of the sky.", dog_sulk: "Drop onto a guard dog's back and leave it sulking."};
+const TROPHY_DESC = {
+  freed_ballard: "One cage door, Ballard Locks, found open. Lock intact. Suspect's associate (\"Nugget\") missing. Paw prints lead to the water.",
+  shinies_ballard: "Five shiny objects reported missing along Market St. Recovered later in a single pile, sorted by sparkle.",
+  clean_ballard: "A full run through Ballard without a single scratch on the subject. Officers involved request a transfer.",
+  secret_room: "Subject located inside a room that is not on any city plan. The room has been there the whole time, apparently.",
+  culvert: "Bent grate under the Locks' stair. Subject rolled through it. Grate is now more bent.",
+  catwalk_watch: "A lost pocket watch, last seen on the fish hoist catwalk. Subject rode the hoist up. Watch did not come down.",
+  raccoon_ipa: "One (1) pint of Raccoon IPA, unattended, beer garden. Glass recovered empty. Witnesses describe \"a happy little burp\".",
+  couple_photo: "Photograph recovered from a beer garden couple: two people, one raccoon, all smiling. Filed as evidence and also on the fridge.",
+  drone_swat: "Department drone downed over Ballard by a single paw swat. Flight recorder audio: \"oh no\".",
+  dog_sulk: "Guard dog found sulking after the subject landed on its back. Dog is fine. Dog will not discuss it."};
+const SUSPECT = {"Officers": [0, "The officers"], "Guard dogs": [1, "Guard dogs"], "Drones": [2, "The drones"], "Falls": [3, "Gravity"], "Drowning": [4, "The Sound"], "Other": [5, "Other"]};
+const RANGES = ["7", "30", "90", "365"];
+const RANGE_LABEL = {"7": "7 days", "30": "30 days", "90": "90 days", "365": "1 year"};
+const RANGE_TEXT = {"7": "last 7 days", "30": "last 30 days", "90": "last 90 days", "365": "last 12 months"};
+const CREW = ["nugget", "gordo", "pip", "byte", "vinnie", "dusty", "biscuit", "mama_rocco"];
+const CREW_NAME = ["Nugget", "Gordo", "Pip", "Byte", "Vinnie", "Dusty", "Biscuit", "Mama Rocco"];
+const SPARSE = 20; /* fewer active players than this: show counts, hold back shares */
+
+/* ---------- state ---------- */
+const store = {get(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }, set(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }};
+const MY_ID = (() => { const v = store.get("jimothy:install_id") || ""; return /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/.test(v) ? v : ""; })();
+/* me: count this device's own runs in (Form AC-7); left out by default, the choice kept on this device */
+const state = {room: "overview", range: "30", me: !!MY_ID && store.get("jimothy:office:me") === "1", drawer: "trophies"};
+let mode = "loading";            /* loading | live | failed | sample */
+const cache = {};                /* "range|me" -> API body */
+let body = null;                 /* the body on show */
+let you = null;                  /* the visitor's own progress, from the game (fragment) */
+const REVIEW = Q.get("state");   /* review only: loading | failed | empty | sparse | dense | stale | sample */
+
+/* ---------- routes: #<room>[&r=<range>][&you=<progress>] ---------- */
+/* The retired corkboard's tabs and section anchors (shared links from before
+   the office) land in the room that now holds those records. */
+const OLD = {map: "board", records: "board", "sec-case": "dispatch", "sec-featured": "evidence", "sec-history": "office",
+  "sec-where": "board", "sec-evidence": "evidence", "sec-crew": "holding", "sec-files": "board", "sec-counter": "kitchen"};
+function parseHash() {
+  const parts = location.hash.replace(/^#/, "").split("&");
+  const old = OLD[parts[0]] || (/^folder/.test(parts[0]) ? "board" : null);
+  if (old) { parts[0] = old; history.replaceState(null, "", location.pathname + location.search + "#" + parts.join("&")); }
+  const room = ORDER.includes(parts[0]) ? parts[0] : "overview";
+  const kv = Object.fromEntries(parts.slice(1).map(p => p.split("=")).filter(p => p.length === 2));
+  return {room, range: RANGES.includes(kv.r) ? kv.r : null, you: kv.you || null};
+}
+const hashFor = (room, range = state.range) => "#" + room + (range !== "30" ? "&r=" + range : "");
+
+/* The game may open the page with the player's own progress in the fragment
+   (docs/STATS_OFFICE.md section 8). It never leaves this tab: parsed, kept in
+   sessionStorage, and cut from the address at once so a shared link never carries it. */
+const YOU_RE = /^v1\.c([0-9a-f]{2})\.t(\d{1,5}|-)\.a([0-9a-f]{3})\.r([0-6])\.d([01])$/;
+function readYou(token) {
+  if (token) {
+    const m = YOU_RE.exec(token);
+    if (m) {
+      const v = {crew: parseInt(m[1], 16), best: m[2] === "-" ? null : +m[2], trophies: parseInt(m[3], 16), reach: +m[4], demo: m[5] === "1"};
+      try { sessionStorage.setItem("jimothy:you", JSON.stringify(v)); } catch (e) {}
+    }
+    history.replaceState(null, "", location.pathname + location.search + hashFor(parseHash().room, parseHash().range || state.range));
+  }
+  try { you = JSON.parse(sessionStorage.getItem("jimothy:you") || "null"); } catch (e) { you = null; }
+}
+function forgetYou() { try { sessionStorage.removeItem("jimothy:you"); } catch (e) {} you = null; renderAll(); }
+
+/* ---------- data ---------- */
+async function fetchLive(range, me) {
+  const k = `${range}|${me ? 1 : 0}`;
+  if (cache[k]) return cache[k];
+  let u = `${API}?range=${range}`;
+  if (MY_ID) u += `&me=${MY_ID}` + (me ? "&include=1" : "");
+  const ctl = new AbortController(); const to = setTimeout(() => ctl.abort(), 8000);
+  try {
+    const r = await fetch(u, {signal: ctl.signal, cache: "no-store"});
+    if (!r.ok) throw new Error("HTTP " + r.status);
+    const j = await r.json();
+    if (!j || !j.live || !j.data || !Array.isArray(j.data.daily)) throw new Error("bad body");
+    cache[k] = j; return j;
+  } finally { clearTimeout(to); }
+}
+function sampleBody(range, me) {
+  const d = SAMPLE.ranges[range][me ? "1" : "0"];
+  if (d.lastEscape === undefined) d.lastEscape = d.rescueN ? 1 : null; /* the sample model predates this field */
+  return {live: false, sample: true, sections: SAMPLE.sections, trophies: SAMPLE.trophies, funnelMid: SAMPLE.funnelMid,
+    neighbourhoods: null, generated_at: null, data: d};
+}
+/* Review states, built from the sample so every room can be judged in each. */
+function reviewBody(kind) {
+  const b = JSON.parse(JSON.stringify(sampleBody(state.range, false)));
+  const d = b.data, k = d.kpi;
+  const scale = f => { for (const key of Object.keys(k)) if (typeof k[key] === "number" && !/^d1$|^d7$|hours/.test(key)) k[key] = Math.round(k[key] * f);
+    k.hours = Math.round(k.hours * f * 10) / 10; for (const o of [d.plat, d.mode, d.causes, d.counter, d.hood]) for (const key of Object.keys(o)) o[key] = Math.round(o[key] * f);
+    d.capsect = d.capsect.map(n => Math.round(n * f)); d.reach = d.reach.map(n => Math.round(n * f)); d.freed = Math.round(d.freed * f); d.rescueN = Math.round(d.rescueN * f);
+    for (const a of ["daily", "roll7", "roll30", "new", "sess"]) d[a] = d[a].map(n => Math.round(n * f)); for (const a of ["d1n", "d7n"]) if (k[a]) k[a] = k[a].map(n => Math.round(n * f)); };
+  b.live = true; b.sample = false; b.generated_at = new Date(Date.now() - 60000).toISOString();
+  b.freshness = {refresh_seconds: 300, stale_after_seconds: 600};
+  if (kind === "dense") { scale(38); d.lastEscape = 0; }
+  if (kind === "sparse") { scale(0.08); k.active = 4; k.today = 1; k.runs = 6; d.reach = [3, 3, 2, 2, 2, 1, 1]; d.freed = 1; d.rescueN = 1; d.lastEscape = 3; }
+  if (kind === "empty") { scale(0); d.lastEscape = null; d.rescue = 0; d.trophy = Object.fromEntries(Object.keys(d.trophy).map(t => [t, 0])); }
+  if (kind === "stale") { b.generated_at = new Date(Date.now() - 3 * 3600e3).toISOString(); d.lastEscape = 2; }
+  if (!d.trophyCount) { const N = k.active; d.trophyPlayers = N; d.trophyCount = Object.fromEntries(Object.entries(d.trophy).map(([t, p]) => [t, Math.round(p * N / 100)])); }
+  return b;
+}
+const D = () => body ? body.data : null;
+const genTime = () => { const g = body && pick(body.generated_at, body.freshness && body.freshness.generated_at, body.generated); return g ? new Date(g) : null; };
+const isFresh = () => { if (!body || !body.live) return false; const g = genTime(); if (!g || isNaN(g)) return body.freshness ? body.freshness.fresh !== false : true;
+  const f = body.freshness || {}; const lim = pick(f.stale_after_seconds, f.refresh_seconds && f.refresh_seconds * 2, 900);
+  return (Date.now() - g.getTime()) / 1000 <= lim + 300; };
+const ago = () => { const g = genTime(); if (!g) return ""; const s = Math.max(0, (Date.now() - g.getTime()) / 1000);
+  return s < 90 ? "just now" : s < 5400 ? `${Math.round(s / 60)} min ago` : s < 172800 ? `${Math.round(s / 3600)} h ago` : `${Math.round(s / 86400)} days ago`; };
+function status() {
+  if (mode === "loading") return {s: "loading", t: "Loading"};
+  if (mode === "failed") return {s: "failed", t: "Offline"};
+  if (mode === "sample") return {s: "sample", t: "Sample data"};
+  return isFresh() ? {s: "live", t: `Live · updated ${ago()}`} : {s: "stale", t: `Stale · updated ${ago()}`};
+}
+function density() { const d = D(); if (!d) return "none"; const k = d.kpi;
+  if (!k.active && !k.runs) return "empty"; return (k.active || 0) < SPARSE ? "sparse" : "dense"; }
+const trophies = () => (body && body.trophies || SAMPLE.trophies).map(t => Array.isArray(t) ? t : [t.id, t.name]);
+const sections = () => body && body.sections || SAMPLE.sections;
+function trophyX(id) { const d = D(); if (!d) return null; const r = d.trophyRank; const it = r && Array.isArray(r.ranking) ? r.ranking.find(t => t.id === id) : null;
+  const c = d.trophyCount; const earned = it ? it.earned : c && c[id] != null ? c[id] : null; const N = pick(r && r.players, d.trophyPlayers, d.kpi.active);
+  if (earned == null) { const p = d.trophy && d.trophy[id] || 0; return {earned: Math.round(p * N / 100), of: N, approx: true}; }
+  return {earned, of: N, rank: it ? it.rank : null, tie: it ? it.tieCount : 0}; }
+const captures = d => Object.entries(d.causes).filter(([k]) => k !== "Walked away").reduce((a, [, n]) => a + n, 0);
+
+async function load() {
+  if (REVIEW) {
+    if (REVIEW === "loading") { mode = "loading"; body = null; return renderAll(); }
+    if (REVIEW === "failed") { mode = "failed"; body = null; return renderAll(); }
+    if (REVIEW === "sample") { mode = "sample"; body = sampleBody(state.range, false); return renderAll(); }
+    mode = "live"; body = reviewBody(REVIEW); return renderAll();
+  }
+  if (mode === "sample") { body = sampleBody(state.range, state.me); return renderAll(); }
+  const k = `${state.range}|${state.me ? 1 : 0}`;
+  if (!cache[k]) { if (!body) mode = "loading"; renderStatus(); }
+  try { body = await fetchLive(state.range, state.me); mode = "live"; }
+  catch (e) { if (!body || !body.live) { mode = "failed"; body = null; } }
+  renderAll();
+}
+
+/* ---------- small renderers ---------- */
+const num = (v, cls = "") => mode === "loading" ? `<span class="skel ${cls}">00</span>` : esc(v);
+function renderStatus() {
+  const st = status();
+  for (const el of document.querySelectorAll("[data-status]")) { el.dataset.s = st.s; el.querySelector("span").textContent = st.t; }
+  const ds = $("dirStatus"); ds.dataset.s = st.s; ds.querySelector("span").textContent = st.t;
+  const n = [];
+  if (mode === "failed") n.push(`<div class="notice" role="alert"><p><b>Records temporarily unavailable.</b> The office can't reach the file right now. Please try again.</p><button type="button" class="btn-plate" id="retry">Try again</button><button type="button" class="btn-text" id="useSample">Show sample data</button></div>`);
+  if (mode === "live" && !isFresh()) n.push(`<div class="notice" data-kind="stale"><p><b>Older records.</b> Last updated ${esc(ago())}; the file normally refreshes every few minutes.</p><button type="button" class="btn-plate" id="retry">Check again</button></div>`);
+  if (mode === "sample") n.push(`<div class="notice" data-kind="sample"><p><b>Sample data.</b> Made-up numbers to show the office. Not real players.</p>${REVIEW ? "" : `<button type="button" class="btn-plate" id="retry">Load the real records</button>`}</div>`);
+  if (you) n.push(`<div class="notice" data-kind="you"><p><b>Your game is on file.</b> Marks in gold come from your game on this device. They stay in this tab and never reach our server.</p><button type="button" class="btn-plate" id="forgetYou">Forget it</button></div>`);
+  $("notices").innerHTML = n.join("");
+  const r = $("retry"); if (r) r.onclick = () => { r.setAttribute("aria-busy", "true"); r.textContent = "Trying…"; for (const k in cache) delete cache[k]; if (mode === "sample") mode = "loading"; load(); };
+  const s = $("useSample"); if (s) s.onclick = () => { mode = "sample"; load(); };
+  const f = $("forgetYou"); if (f) f.onclick = forgetYou;
+}
+function renderDirectory() {
+  const items = ORDER.map(id => {
+    const r = ROOM[id]; const name = id === "overview" ? "Building" : r.name;
+    const cur = state.room === id ? ' aria-current="page"' : "";
+    return `<li><a href="${hashFor(id)}"${cur}>${PAW}${esc(name)}</a></li>`;
+  }).join("");
+  $("dirList").innerHTML = items; $("pdirList").innerHTML = items;
+  const c = $("pdirList").querySelector('[aria-current]'); if (c && c.parentElement.parentElement.scrollTo) { const ul = c.closest("ul"); ul.scrollLeft = c.offsetLeft - (ul.clientWidth - c.offsetWidth) / 2; }
+}
+const statusChip = () => `<span class="status" data-status data-s="${status().s}"><i aria-hidden="true"></i><span>${esc(status().t)}</span></span>`;
+/* This device's own runs are left out of every count unless the visitor includes them (Form AC-7).
+   When the Worker says this device has sent records and they are left out, the page says so beside the numbers,
+   so a player who has been playing never reads a smaller total as everyone's. */
+const selfExcluded = () => !!(body && body.live && body.me && body.me.seen && !body.me.included);
+function setMe(on) { state.me = !!on; store.set("jimothy:office:me", on ? "1" : "0"); load(); }
+const selfNote = () => selfExcluded() ? `<span class="selfnote">Not counting this device's own runs. <button type="button" class="btn-text" data-incme>Include them</button></span>` : "";
+document.addEventListener("click", e => { if (e.target.closest && e.target.closest("[data-incme]")) setMe(true); });
+const lastText = last => last == null ? "none on file" : last === 0 ? "today" : last === 1 ? "yesterday" : `${fmtN(last)} days ago`;
+const todayDate = () => { const t = body && body.today; if (t) return new Date(t + "T12:00:00Z"); const g = genTime(); return g && !isNaN(g) ? g : new Date(); };
+const dayLabel = (i, n) => { const d = todayDate(); d.setUTCDate(d.getUTCDate() - (n - 1 - i)); return d.toLocaleDateString("en-US", {month: "short", day: "numeric", timeZone: "UTC"}); };
+/* The cutaway: one file on the 3x grid, scaled by whole numbers and pixelated, like the hero. */
+/* The cutaway: the painting at full detail, smooth, 1 CSS px per art px with 1x/2x/3x files; close-ups (2x) use the 2x and 3x files. */
+const CUT_SET = `${ART.c1} 1x, ${ART.c2} 2x, ${ART.c3} 3x`;
+const artImg = (lazy = false, zoom = 1) => zoom > 1 ? `<img class="art" src="${ART.c2}" srcset="${ART.c2} 1x, ${ART.c3} 2x" width="1440" height="1080" alt="" decoding="async">` : `<img class="art" src="${ART.c1}" srcset="${CUT_SET}" width="1440" height="1080" alt="" decoding="async"${lazy ? ' loading="lazy"' : ""}>`;
+const spriteSpan = (s, ox = 0, oy = 0) => `<span class="sprite${s.n > 1 ? " anim" : ""}${s.flip ? " flip" : ""}${s.d ? " hd" : ""}" aria-hidden="true" style="left:${s.x - ox}px;top:${s.y - oy}px;width:${s.w}px;height:${s.h}px;background-image:url(${ART[s.k]})${s.d ? `;background-size:${s.w}px ${s.h}px` : ""}${s.n > 1 ? `;--n:${s.n};--w:${s.w}px;--t:${(s.n / s.fps).toFixed(2)}s` : ""}"></span>`
+  /* the contact shadow: centred on the sole row, darkest where the feet touch */
+  + `<span class="shadow" aria-hidden="true" style="left:${Math.round(s.x - ox + s.w * 0.14)}px;top:${s.f - oy - 4}px;width:${Math.round(s.w * 0.72)}px"></span>`
+  /* the beam is 160 x 90 art px with its apex at the right edge, 45% down: placed so the apex sits on the lens */
+  + (s.lens ? `<span class="beam" aria-hidden="true" style="left:${s.x - ox + s.lens[0] - 158}px;top:${s.y - oy + s.lens[1] - 40.5}px"></span>` : "");
+function spritesHTML() { return SPRITES.map(s => spriteSpan(s)).join(""); }
+
+/* ---------- the kit's shared pieces ---------- */
+const RANGE_SHORT = {"7": "7 days", "30": "30 days", "90": "90 days", "365": "1 year"};
+/* The reporting period: one control everywhere (keys 1 to 4 anywhere on the page). */
+const rangeSeg = (big = false) => `<div class="seg${big ? " big" : ""}" role="group" aria-label="Reporting period">${RANGES.map((r, i) =>
+  `<button type="button" class="seg-b" data-range="${r}" aria-pressed="${state.range === r}"${state.pending === r ? ' aria-busy="true"' : ""} title="Key ${i + 1}">${RANGE_SHORT[r]}</button>`).join("")}</div>`;
+/* A panel: the game's ink plate. tab = a small filing tab (used sparingly), cls = extra classes. */
+const panel = (w, title, sub, inner, tab, cls = "") => `<section class="panel ${w} ${cls}"><header class="ph">${tab ? `<p class="tab">${tab}</p>` : ""}<h2>${title}</h2>${sub ? `<p class="psub">${sub}</p>` : ""}</header>${inner}</section>`;
+const emptyNote = t => `<div class="note-empty"><span class="ico i-face" aria-hidden="true"></span><p>${esc(t)}</p></div>`;
+const sparseNote = () => density() === "sparse" ? `<p class="note-small">Small file: ${fmtN(D().kpi.active)} players in this period. Counts are exact; percentages wait until there are ${SPARSE}.</p>` : "";
+const fieldNote = t => `<p class="fieldnote">${PAW}<span>${esc(t)}</span><small>Jimothy</small></p>`;
+/* A room's records while loading (skeletons in the final shapes) or offline (a clear message and a retry). */
+function roomState(title, tab) {
+  if (mode === "loading") return `<section class="panel w8" aria-busy="true"><header class="ph"><p class="tab">${tab}</p><h2>${title}</h2><p class="psub">Opening the file&hellip;</p></header><div class="skel-block" style="height:96px"></div><div class="skel-block" style="height:160px"></div></section>
+    <section class="panel w4" aria-hidden="true"><div class="skel-block" style="height:24px;width:40%"></div><div class="skel-block" style="height:200px"></div></section>`;
+  return `<section class="panel w12"><header class="ph"><p class="tab">${tab}</p><h2>${title}</h2></header><div class="note-empty err"><span class="ico i-ko" aria-hidden="true"></span><p><b>Records temporarily unavailable.</b> Nothing is shown rather than a wrong number. Please try again.</p><button type="button" class="btn-plate" data-retry>Try again</button></div></section>`;
+}
+
+/* ---------- the building is the interface: one place, a camera that moves ----------
+   The whole cutaway fills the screen; choosing a room moves the camera into it (a transform on the
+   world layer) and its records dock beside it (desktop) or in a sheet below it (phones). Moving
+   between rooms pans across the same building. Routes, Back and Forward drive the camera. */
+function signInner(d, k, size) {
+  const last = d ? d.lastEscape : null;
+  return mode === "loading" ? `<span class="skel" style="width:2.5em;height:${size}px"></span>` : !d ? `<span class="sign-off">${pix("Offline")}</span>` : pix(last == null ? "-" : String(last), "amber");
+}
+function signNote(d, k) {
+  const last = d ? d.lastEscape : null;
+  return mode === "loading" ? "&nbsp;" : !d ? "No records while the office is offline." : last == null ? "No escapes on file yet." : last === 0 ? "Nugget got out today." : last === 1 ? "Last escape: yesterday." : `Last escape: ${fmtN(last)} days ago.`;
+}
+/* A sparkline that starts at the first day with records (young data is not drawn as a spike from zero). */
+function spark(arr, label) {
+  if (!arr || !arr.length) return "";
+  const n = arr.length; let f = 0; while (f < n && !arr[f]) f++;
+  if (f >= n) return `<span class="spark-cap"><span>${esc(label)}</span><span>none yet</span></span>`;
+  const v = arr.slice(f), m = v.length, max = Math.max(1, ...v);
+  const since = f > 0 ? `since ${dayLabel(f, n)}` : label;
+  if (m < 3) {
+    const bars = v.map((x, i) => `<rect x="${(i * 100 / 3 + 4).toFixed(1)}" y="${(42 - x / max * 38).toFixed(1)}" width="${(100 / 3 - 8).toFixed(1)}" height="${(x / max * 38).toFixed(1)}" rx="1"/>`).join("");
+    return `<span class="sparkbox"><svg class="spark bars" viewBox="0 0 100 44" preserveAspectRatio="none" aria-hidden="true" focusable="false"><line class="bl" x1="0" y1="42.5" x2="100" y2="42.5"/>${bars}</svg></span>
+      <span class="spark-cap"><span>${esc(m === 1 ? `First day on file: ${dayLabel(f, n)}` : `${m} days on file, ${since}`)}</span><span>${v.map(fmtN).join(", ")}</span></span>`;
+  }
+  const pts = v.map((x, i) => [+(i / (m - 1) * 100).toFixed(2), +(42 - x / max * 38).toFixed(2)]);
+  const line = pts.map(p => p.join(",")).join(" "), last = pts[m - 1];
+  return `<span class="sparkbox"><svg class="spark" viewBox="0 0 100 44" preserveAspectRatio="none" aria-hidden="true" focusable="false">
+      <path class="ar" d="M0,42 L${line.replace(/ /g, " L")} L100,42 Z"/><line class="bl" x1="0" y1="42.5" x2="100" y2="42.5"/><polyline class="ln" points="${line}"/></svg>
+      <span class="dot" style="left:${last[0]}%;top:${(last[1] / 44 * 100).toFixed(1)}%" aria-hidden="true"></span></span>
+    <span class="spark-cap"><span>${esc(f > 0 ? `${label.split(",")[0]}, ${since}` : label)}</span><span>peak <b>${fmtN(max)}</b></span></span>`;
+}
+
+/* The world: the cutaway, its cast, the live sign on the dispatch board, the rooms as real links. */
+function buildWorld() {
+  const w = $("world");
+  const rooms = ROOMS.map((r, i) => { const [x0, y0, x1, y1] = r.r;
+    return `<a class="room" href="${hashFor(r.id)}" data-room="${r.id}" style="left:${x0}px;top:${y0}px;width:${x1 - x0}px;height:${y1 - y0}px" aria-label="${esc(r.long)}, ${esc(r.floor.toLowerCase())}: ${esc(r.blurb)} (key ${i + 1})">
+      <span class="tag" aria-hidden="true"><kbd>${i + 1}</kbd><span class="nm">${esc(r.name)}</span></span></a>`; }).join("");
+  w.innerHTML = `<img class="art" id="art" src="${ART.c1}" srcset="${CUT_SET}" width="1440" height="1080" alt="" decoding="async" fetchpriority="high">
+    ${ROOMS.map(r => `<img class="roomhd" data-room="${r.id}" alt="" decoding="async" style="left:${r.r[0]}px;top:${r.r[1]}px;width:${r.r[2] - r.r[0]}px;height:${r.r[3] - r.r[1]}px">`).join("")}
+    ${spritesHTML()}<div id="worldLive"></div>${rooms}
+    <span class="dim" data-d="t"></span><span class="dim" data-d="b"></span><span class="dim" data-d="l"></span><span class="dim" data-d="r"></span>`;
+  $("backdrop").innerHTML = `<img src="${ART.c1}" alt="" aria-hidden="true">`;
+}
+/* Live pieces painted onto the props: only the data (the number on the days-since board, the radio's LIVE lamp). */
+function renderWorldLive() {
+  const d = D();
+  $("worldLive").innerHTML = `<div class="ov signnum" style="left:377px;top:581px;width:110px" aria-hidden="true">${mode === "loading" || !d ? "" : pix(d.lastEscape == null ? "-" : String(d.lastEscape), "amber")}</div>
+    <span class="ov livelamp ${status().s === "live" ? "on" : ""}" style="left:365.5px;top:682px" aria-hidden="true"></span>`;
+}
+
+/* The dispatch board: the headline numbers over the yard's night sky (a sheet on phones). */
+function hudHTML(d, k) {
+  const R = RANGE_TEXT[state.range], last = d ? d.lastEscape : null, val = v => num(v == null ? DASH : fmtN(v));
+  const list = ROOMS.map((r, i) => `<li><a href="${hashFor(r.id)}"><kbd>${i + 1}</kbd><span>${esc(r.name)}</span><small>${esc(r.floor)}</small></a></li>`).join("");
+  return `<header class="hud-head"><p class="kicker">Dispatch <b>${esc(R)}</b></p>${statusChip()}</header>
+    <a class="hud-sign" href="${hashFor("dispatch")}" aria-label="Days since last escape: ${esc(!d ? "unavailable" : last == null ? "none on file" : String(last))}. Open dispatch.">
+      <span class="ms-t"><span class="ms-l">Days since last escape</span><span class="ms-n">${signNote(d, k)}${d && k.escToday > 0 ? ` <b>${fmtN(k.escToday)} ${k.escToday === 1 ? "escape" : "escapes"} today</b>` : ""}</span></span>
+      <span class="ms-w">${signInner(d, k, 42)}</span></a>
+    <dl class="hud-stats">
+      <div><dt>Players today</dt><dd>${val(k.today)}</dd></div>
+      <div><dt>Runs, ${esc(RANGE_LABEL[state.range])}</dt><dd>${val(k.runs)}</dd></div>
+      <div><dt>Freed Nugget</dt><dd class="rw">${val(d ? d.freed : null)}</dd></div>
+    </dl>
+    ${d ? spark(d.daily, `Players per day, ${R}`) : ""}
+    ${selfNote() ? `<p class="hud-note">${selfNote()}</p>` : ""}
+    ${density() === "empty" ? `<p class="hud-note">No reports filed in the ${esc(R)}. The alley remains suspiciously quiet.</p>` : ""}
+    ${rangeSeg()}
+    <nav class="hud-rooms" aria-label="Rooms"><ul>${list}</ul></nav>`;
+}
+
+/* ---------- the camera ---------- */
+const DPR = () => Math.max(1, Math.round((window.devicePixelRatio || 1) * 4) / 4);
+const cam = {s: 1, x: 0, y: 0};
+function viewArea() {
+  const vp = $("vp"), W = vp.clientWidth, H = vp.clientHeight;
+  const phone = matchMedia("(max-width:899px)").matches;
+  if (state.room === "overview") {
+    if (phone) { const sh = $("hud").getBoundingClientRect().height; return {x: 0, y: 0, w: W, h: Math.max(160, H - sh), phone}; }
+    return {x: 0, y: 0, w: W, h: H, phone};
+  }
+  if (phone) { const sh = $("side").getBoundingClientRect().height; return {x: 0, y: 0, w: W, h: Math.max(160, H - sh), phone}; }
+  return {x: 0, y: 0, w: W - $("side").getBoundingClientRect().width, h: H, phone};
+}
+function target() {
+  const a = viewArea(), dpr = DPR();
+  let rect, s;
+  if (state.room === "overview") {
+    rect = a.phone ? [118, 168, 1062, 1078] : [0, 0, 1440, 1080];
+    s = Math.min(a.w / (rect[2] - rect[0]), a.h / (rect[3] - rect[1]));
+  } else {
+    const [x0, y0, x1, y1] = ROOM[state.room].r, p = 14;
+    rect = [x0 - p, y0 - p, x1 + p, y1 + p];
+    s = Math.min(a.w / (rect[2] - rect[0]), a.h / (rect[3] - rect[1])) * 0.96;
+    /* the 6x room paintings stay sharp up to 6 device px per art px; the 3x cast stays crisp at whole device pixels */
+    s = Math.min(s, 6 / dpr, 3);
+    const step = 1 / Math.max(dpr, 2); /* whole device pixels for the 3x cast on 2x and 3x screens; half steps on 1x */
+    s = Math.max(step, Math.floor(s / step) * step);
+  }
+  const cx = (rect[0] + rect[2]) / 2, cy = (rect[1] + rect[3]) / 2;
+  const snap = v => Math.round(v * dpr) / dpr;
+  return {s, x: snap(a.x + a.w / 2 - cx * s), y: snap(a.y + a.h / 2 - cy * s)};
+}
+/* The full 4320 px painting, fetched and decoded off-screen, then swapped in whole: never a blank frame mid-move. */
+let upgraded = false;
+function upgradeArt() {
+  if (upgraded) return; upgraded = true;
+  const im = new Image(); im.src = ART.c3;
+  (im.decode ? im.decode() : Promise.resolve()).then(() => { const a = $("art"); a.removeAttribute("srcset"); a.removeAttribute("sizes"); a.src = ART.c3; }).catch(() => { upgraded = false; });
+}
+function moveCamera(animate) {
+  const t = target(), w = $("world");
+  Object.assign(cam, t);
+  w.classList.toggle("moving", !!animate && !reduce);
+  if (animate && !reduce) { clearTimeout(w._t); w._t = setTimeout(() => w.classList.remove("moving"), 700); }
+  w.style.transform = `translate(${t.x}px,${t.y}px) scale(${t.s})`;
+  w.style.setProperty("--s", t.s);
+  const zoomed = state.room !== "overview";
+  w.classList.toggle("zoomed", zoomed);
+  /* whole device pixels for the 3x cast when zoomed; smooth when the building is shown small */
+  w.classList.toggle("px", zoomed || Math.abs(t.s * DPR() - Math.round(t.s * DPR())) < 0.01);
+  if (zoomed || t.s * DPR() > 1.5) upgradeArt();
+  /* the zoomed room's own 6x painting: fetched when first framed, shown once decoded */
+  for (const im of w.querySelectorAll(".roomhd")) {
+    const on = zoomed && im.dataset.room === state.room;
+    if (on && !im.src) { im.src = ROOM_HD[im.dataset.room]; (im.decode ? im.decode() : Promise.resolve()).then(() => im.classList.add("ready")).catch(() => {}); }
+    im.classList.toggle("on", on);
+  }
+  if (zoomed) {
+    const [x0, y0, x1, y1] = ROOM[state.room].r;
+    const set = (k, l, tp, wd, ht) => Object.assign(w.querySelector(`.dim[data-d="${k}"]`).style, {left: l + "px", top: tp + "px", width: wd + "px", height: ht + "px"});
+    set("t", -2000, -2000, 5440, y0 + 2000); set("b", -2000, y1, 5440, 3080 - y1); set("l", -2000, y0, x0 + 2000, y1 - y0); set("r", x1, y0, 3440 - x1, y1 - y0);
+  }
+  for (const a of w.querySelectorAll(".room")) { const on = a.dataset.room === state.room; a.classList.toggle("here", on); if (on) a.setAttribute("aria-current", "location"); else a.removeAttribute("aria-current"); a.tabIndex = on ? -1 : 0; }
+  /* a tag wider than its room (the narrow upstairs rooms on phones) shows just its key, so tags never overlap */
+  for (const a of w.querySelectorAll(".room")) { const tg = a.querySelector(".tag"); tg.classList.remove("short"); if (tg.offsetWidth > a.offsetWidth - 10 / t.s) tg.classList.add("short"); }
+}
+function renderHud() { const d = D(), k = d && d.kpi || {}; $("hud").innerHTML = hudHTML(d, k); }
+function renderSide() {
+  const room = ROOM[state.room], side = $("side");
+  if (!room) { side.hidden = true; side.innerHTML = ""; return; }
+  side.hidden = false;
+  const d = D(), i = ROOMS.indexOf(room);
+  const keepScroll = side.dataset.room === state.room && $("sideBody") ? $("sideBody").scrollTop : 0; /* a data refresh keeps the reader's place */
+  const nav = (j, label) => { const r = ROOMS[(j + ROOMS.length) % ROOMS.length]; return `<a class="btn-text" href="${hashFor(r.id)}" aria-label="${label}: ${esc(r.name)}">${label === "Previous room" ? "&larr;" : ""} ${esc(r.name)} ${label === "Next room" ? "&rarr;" : ""}</a>`; };
+  const docsFor = () => state.room === "dispatch" ? dispatchDocs(d) : state.room === "office" ? officeDocs(d) : state.room === "evidence" ? evidenceDocs(d)
+    : state.room === "board" ? boardDocs(d) : state.room === "holding" ? holdingDocs(d) : kitchenDocs(d);
+  side.innerHTML = `<button type="button" class="sheet-grip" id="grip" aria-label="Show more of the records" aria-expanded="${side.classList.contains("expanded")}"><i aria-hidden="true"></i></button>
+    <header class="side-head">
+      <div class="side-top"><p class="kicker">${esc(room.floor)} <b>Case 001 / Ballard</b></p>
+        <button type="button" class="btn-plate zoomout" data-out aria-label="Back to the whole building (Escape)"><span aria-hidden="true">&times;</span><span class="lbl">Building</span></button></div>
+      <h1 id="roomTitle" tabindex="-1">${esc(room.long)}</h1><p class="sec-sub">${esc(room.blurb)}</p>
+      ${selfNote() ? `<p class="sec-sub">${selfNote()}</p>` : ""}
+      <div class="side-tools">${statusChip()}${rangeSeg()}</div>
+    </header>
+    <div class="side-body" id="sideBody"><div class="docs" id="sideDocs"></div>
+      <nav class="side-nav" aria-label="Neighbouring rooms">${nav(i - 1, "Previous room")}${nav(i + 1, "Next room")}</nav></div>`;
+  side.dataset.room = state.room;
+  $("sideDocs").innerHTML = docsFor(); /* after the panel exists, so charts measure its real width */
+  $("sideBody").scrollTop = keepScroll;
+  if (state.room === "office") wireOffice();
+  if (state.room === "evidence") { wireEvidence(); if (state.openBag && d) { const id = state.openBag; state.openBag = null; const b = document.querySelector(`.bag[data-id="${id}"]`); if (b) setTimeout(() => openEvidence(id, b), 0); } }
+  if (state.room === "board") wireBoard();
+  if (state.room === "holding") wireHolding();
+  if (state.room === "kitchen") wireKitchen();
+  wireCharts();
+  $("grip").onclick = () => { side.classList.toggle("expanded"); $("grip").setAttribute("aria-expanded", String(side.classList.contains("expanded"))); };
+}
+function spritesFor(ox, oy, h = 300) {
+  return SPRITES.filter(s => s.x + s.w > ox && s.x < ox + 390 && s.y + s.h > oy && s.y < oy + h).map(s => spriteSpan(s, ox, oy)).join("");
+}
+/* Spatial neighbours for the arrow keys: the nearest room whose centre lies that way. */
+function neighbour(id, dx, dy) {
+  const c = r => [(r.r[0] + r.r[2]) / 2, (r.r[1] + r.r[3]) / 2];
+  const [x, y] = c(ROOM[id]);
+  let best = null, bd = Infinity;
+  for (const r of ROOMS) { if (r.id === id) continue; const [rx, ry] = c(r); const vx = rx - x, vy = ry - y;
+    const along = vx * dx + vy * dy; if (along <= 0) continue; const off = Math.abs(vx * dy - vy * dx); const score = along + off * 2;
+    if (score < bd) { bd = score; best = r.id; } }
+  return best;
+}
+
+function dispatchDocs(d) {
+  if (!d) return roomState("Dispatch log", "Case 001 / Ballard");
+  const k = d.kpi || {}, R = RANGE_TEXT[state.range];
+  const last = d.lastEscape;
+  const yourGame = you ? (() => {
+    const crew = CREW.filter((c, i) => you.crew & (1 << i)).length;
+    return panel("w4 yourfile", "Your file", "From your game on this device. Never sent to our server.", `
+      <dl class="stats"><div class="stat you"><dt>Your fastest rescue</dt><dd>${esc(mmss(you.best))}</dd><small>${d.rescue ? `players' average ${esc(mmss(d.rescue))}` : "&nbsp;"}</small></div>
+      <div class="stat"><dt>Crew you freed</dt><dd>${crew}<small> of 8</small></dd></div>
+      <div class="stat"><dt>Furthest stretch</dt><dd class="sm">${esc(sections()[you.reach] || DASH)}</dd></div></dl>
+      <div class="btnrow"><button type="button" class="btn-text" id="forget2">Forget it</button></div>`, "Yours");
+  })() : "";
+  return `
+  ${panel("w8", "Dispatch log", "Today's headline numbers. Each one lives in its own room; follow it for the full file.", `
+    <dl class="stats">
+      <div class="stat big"><dt>Days since last escape</dt><dd>${fmtN(last == null ? DASH : last)}</dd><small>${last == null ? "no escapes on file yet" : "a run freed Nugget " + (last === 0 ? "today" : last === 1 ? "yesterday" : last + " days ago")}</small></div>
+      <div class="stat"><dt>Players today</dt><dd>${fmtN(k.today)}</dd><small><a href="${hashFor("office")}">Mulch's office &rarr;</a></small></div>
+      <div class="stat"><dt>Runs, ${esc(RANGE_LABEL[state.range])}</dt><dd>${fmtN(k.runs)}</dd><small><a href="${hashFor("board")}">Sightings board &rarr;</a></small></div>
+      <div class="stat reward"><dt>Players who freed Nugget</dt><dd>${fmtN(d.freed)}</dd><small>${k.escToday ? `${fmtN(k.escToday)} escapes today &middot; ` : ""}<a href="${hashFor("holding")}">Holding &rarr;</a></small></div>
+    </dl>
+    ${density() === "empty" ? emptyNote(`No sightings in the ${R}. Try a longer period.`) : ""}
+    ${canShare() ? `<div class="btnrow">${last != null ? shareBtn(fmtN(last), "days since Jimothy's last escape", "Ballard field office", "days since") : ""}${shareBtn(fmtN(k.today), "players sighted today", "Ballard field office", "players today")}${shareBtn(fmtN(d.freed), "players freed Nugget", R, "rescuers")}</div>` : ""}`, "Case 001 / Ballard &middot; " + esc(R))}
+  ${panel("w4 wanted", "Jimothy", "Raccoon. Round. Long legs. Answers to nothing. Last seen in Ballard with a crew of eight.", `
+    <div class="wanted-art"><span class="jimstill" style="background-image:url(${ART.jimIdle});width:${KIT.jim_idle.w}px;height:${KIT.jim_idle.h}px" aria-hidden="true"></span></div>
+    ${fieldNote("i'm not hiding. i'm resting in a bin.")}
+`, "Wanted")}
+  ${yourGame}`;
+}
+
+/* Mulch's office: the people behind the numbers, and the reporting period */
+function officeDocs(d) {
+  const per = panel("w4", "Reporting period", "Every room follows this. Keys 1 to 4 anywhere.", `${rangeSeg(true)}
+    <div class="optin"><p class="tab">Form AC-7 &middot; Self-report</p>
+      <label><input type="checkbox" id="incMe" ${state.me ? "checked" : ""} ${MY_ID && mode !== "sample" ? "" : "disabled"}>
+      <span>Include my own sightings<small>${MY_ID ? "This device's runs are left out unless you tick this." : "Play the web build in this browser to file your own."}</small></span></label></div>`, "Filed under");
+  if (!d) return roomState("The briefing file", "Case 001 / Ballard") + per;
+  const k = d.kpi || {}, R = RANGE_TEXT[state.range];
+  const dens = density(), showPct = dens === "dense";
+  const ret = (p, nn) => !nn || !nn[1] ? [DASH, "not enough returns yet"] : [showPct && p != null ? p + "%" : fmtN(nn[0]), `${fmtN(nn[0])} of ${fmtN(nn[1])} new players`];
+  const [d1v, d1s] = ret(k.d1, k.d1n), [d7v, d7s] = ret(k.d7, k.d7n);
+  const bars = (o, unit) => { const e = Object.entries(o || {}).sort((a, b) => b[1] - a[1]); const tot = e.reduce((a, [, v]) => a + v, 0);
+    return e.length && tot ? hbars(e.map(([n, v]) => ({label: esc(n), v, value: fmtN(v) + (showPct ? `<small> ${Math.round(100 * v / tot)}%</small>` : "")}))) + `<p class="note-small">${fmtN(tot)} ${unit} in all.</p>` : emptyNote("Nothing on file for this period."); };
+  return `
+  ${panel("w8", "The briefing file", `Who's been seeing him, ${esc(R)}${state.me ? ", including your device" : ""}. Counts are players (one per install), never people.`, `
+    <dl class="stats c3">
+      <div class="stat big"><dt>Players, ${esc(RANGE_LABEL[state.range])}</dt><dd>${fmtN(k.active)}</dd></div>
+      <div class="stat"><dt>New players</dt><dd>${fmtN(k.newIn)}</dd><small>first seen in the period</small></div>
+      <div class="stat"><dt>Runs</dt><dd>${fmtN(k.runs)}</dd><small>levels started</small></div>
+      <div class="stat"><dt>Hours on the loose</dt><dd>${k.hours == null ? DASH : fmtN(k.hours)}</dd><small>active play, all players</small></div>
+      <div class="stat"><dt>This week</dt><dd>${fmtN(k.week)}</dd><small>players, last 7 days</small></div>
+      <div class="stat"><dt>This month</dt><dd>${fmtN(k.month)}</dd><small>players, last 30 days</small></div>
+      <div class="stat"><dt>Ever</dt><dd>${fmtN(k.ever)}</dd><small>since the records began</small></div>
+      <div class="stat"><dt>Back the next day</dt><dd>${d1v}</dd><small>${d1s}</small></div>
+      <div class="stat"><dt>Back a week later</dt><dd>${d7v}</dd><small>${d7s}</small></div>
+    </dl>${sparseNote()}
+    ${dens === "empty" ? emptyNote(`Nobody sighted in the ${R}. Pick a longer period.`) : ""}
+    ${canShare() && dens !== "empty" ? `<div class="btnrow">${shareBtn(fmtN(k.active), "players sighted", R, "players")}${shareBtn(String(k.hours), "hours on the loose", R, "hours")}</div>` : ""}`, "Case 001 / Ballard")}
+  ${per}
+  ${panel("w6", "Platforms", `Players by platform, ${esc(R)}.`, bars(d.plat, "players"), "Equipment report")}
+  ${panel("w6", "Play modes", `Runs by mode, ${esc(R)}.`, bars(d.mode, "runs") + fieldNote("explorer mode is just arcade with naps."), "Equipment report")}
+  ${panel("w12 memo", "Operation Clean Sweep", "Ballard first. Results by Friday. The binder on the Chief's shelf is the plan; the board upstairs is how it's going.", `<p class="stamp">Pending</p>`, "Memo &middot; Mayor's office")}`;
+}
+function wireOffice() {
+  const c = $("incMe"); if (c) c.onchange = () => setMe(c.checked);
+}
+
+/* evidence room: the cabinet's drawers */
+function evidenceDocs(d) {
+  if (!d) return roomState("The evidence cabinet", "Case 001 / Ballard");
+  const tabs = [["trophies", "Trophies"], ["caught", "How he got caught"], ["stretch", "Captures by stretch"]];
+  const drawer = tabs.map(([id, n]) => `<button type="button" role="tab" id="tab-${id}" aria-controls="dr-${id}" aria-selected="${state.drawer === id}" tabindex="${state.drawer === id ? 0 : -1}">${n}</button>`).join("");
+  const inner = state.drawer === "trophies" ? trophyDrawer(d) : state.drawer === "caught" ? causeDrawer(d) : stretchDrawer(d);
+  return `${highlights(d)}
+  <section class="panel w12"><header class="ph"><p class="tab">Case 001 / Ballard &middot; ${esc(RANGE_TEXT[state.range])}</p><h2>The evidence cabinet</h2><p class="psub">Every trophy, every capture, catalogued.</p></header>
+    <div class="tabs" role="tablist" aria-label="Cabinet drawers">${drawer}</div>
+    <div class="drawer" role="tabpanel" id="dr-${state.drawer}" aria-labelledby="tab-${state.drawer}">${inner}</div></section>`;
+}
+/* Rarest = held by the fewest players among trophies anyone has earned (ties count together). */
+function rarestEarned() {
+  const e = trophies().map(([id, name]) => [name, trophyX(id)]).filter(([, t]) => t && t.earned > 0);
+  const min = e.length ? Math.min(...e.map(([, t]) => t.earned)) : null;
+  const all = e.filter(([, t]) => t.earned === min);
+  return {min, n: all.length, names: all.map(([n]) => n), of: all.length ? all[0][1].of : 0};
+}
+function highlights(d) {
+  const causes = Object.entries(d.causes).filter(([k, n]) => k !== "Walked away" && n > 0).sort((a, b) => b[1] - a[1]);
+  const st = d.capsect.map((n, i) => [sections()[i], n]).filter(x => x[1] > 0).sort((a, b) => b[1] - a[1]);
+  const r = rarestEarned();
+  const it = (t, v, s) => `<div class="stat"><dt>${t}</dt><dd class="sm">${esc(v)}</dd><small>${s}</small></div>`;
+  return panel("w12", "The file so far", "", `<dl class="stats three">${it("Most wanted captor", causes[0] ? (SUSPECT[causes[0][0]] || [0, causes[0][0]])[1] : DASH, causes[0] ? `${fmtN(causes[0][1])} captures` : "no captures yet")}
+    ${it("Hardest stretch", st[0] ? st[0][0] : DASH, st[0] ? `${fmtN(st[0][1])} captures in Ballard` : "no captures yet")}
+    ${it(r.n > 1 ? "Rarest trophies (tied)" : "Rarest trophy", r.n ? (r.n > 1 ? `${r.n} tied` : r.names[0]) : DASH, r.n ? `${r.n > 1 ? esc(r.names.join(", ")) + ": " : ""}${fmtN(r.min)} of ${fmtN(r.of)} players${r.n > 1 ? " each" : ""}` : "none earned yet")}</dl>${sparseNote()}`, "Case highlights");
+}
+function trophyDrawer(d) {
+  const list = trophies();
+  const rarest = rarestEarned();
+  const bags = list.map(([id, name], i) => {
+    const t = trophyX(id) || {earned: 0, of: 0};
+    const yours = you && (you.trophies & (1 << i));
+    let rk = "";
+    if (t.earned > 0 && t.earned === rarest.min) rk = rarest.n > 1 ? `Rarest, tied with ${rarest.n - 1}` : "Rarest";
+    const share = density() === "dense" && t.of ? ` (${Math.round(100 * t.earned / t.of)}%)` : "";
+    return `<li><button type="button" class="bag${t.earned ? "" : " none"}" data-id="${id}" aria-haspopup="dialog">
+      <span class="tico" style="background-position:-${i * 60}px 0" aria-hidden="true"></span>
+      <span class="bt">${yours ? '<span class="yours">you have this</span>' : ""}${rk ? `<span class="rk">${esc(rk)}</span>` : ""}</span>
+      <span class="nm">${esc(name)}</span><span class="how">${esc(TROPHY_TEXT[id] || "")}</span>
+      <span class="cnt"><b>${fmtN(t.earned)}</b> of ${fmtN(t.of)} ${t.of === 1 ? "player" : "players"}${share}${t.approx ? " (approx.)" : ""}</span>
+      <span class="tr" aria-hidden="true"><i style="width:${t.of ? (100 * t.earned / t.of).toFixed(1) : 0}%"></i></span></button></li>`;
+  }).join("");
+  return (density() === "empty" ? emptyNote("No players in this period, so no trophies on file. Try a longer period.") : "") + `<ul class="bags">${bags}</ul>`;
+}
+function causeDrawer(d) {
+  const order = Object.entries(d.causes).filter(([k]) => k !== "Walked away" && (k !== "Other" || d.causes.Other)).sort((a, b) => b[1] - a[1]);
+  const caught = captures(d);
+  const rows = order.map(([k, n]) => { const [cell, label] = SUSPECT[k] || [5, k];
+    return {icon: `<span class="mugs" style="background-position:-${cell * 60}px 0" aria-hidden="true"></span>`, label: esc(label), v: n, note: caught ? `${fmtN(n)} of ${fmtN(caught)} captures` : ""}; });
+  return `${caught ? "" : emptyNote("No captures on file for this period.")}${hbars(rows, {cls: "suspects"})}
+    <p class="note-small"><b>${fmtN(caught)}</b> captures &middot; <b>${fmtN(d.rescueN)}</b> runs freed Nugget &middot; <b>${fmtN(d.causes["Walked away"] || 0)}</b> walked away (quit, not caught)</p>`;
+}
+function stretchDrawer(d) {
+  const tot = d.capsect.reduce((a, b) => a + b, 0);
+  return `${tot ? "" : emptyNote("No captures in Ballard this period.")}<p class="psub">Captures in Ballard by stretch, west to east.</p>
+    ${hbars(d.capsect.map((n, i) => ({label: esc(sections()[i]), v: n})))}`;
+}
+function wireEvidence() {
+  const tabs = [...document.querySelectorAll('[role="tab"]')];
+  tabs.forEach((t, i) => {
+    t.onclick = () => { state.drawer = t.id.slice(4); renderRoom(); $("tab-" + state.drawer).focus(); };
+    t.onkeydown = e => { const n = {ArrowRight: 1, ArrowLeft: -1}[e.key]; if (n) { e.preventDefault(); tabs[(i + n + tabs.length) % tabs.length].click(); } };
+  });
+  for (const b of document.querySelectorAll(".bag")) b.onclick = () => openEvidence(b.dataset.id, b);
+}
+function openEvidence(id, from) {
+  const i = trophies().findIndex(t => t[0] === id);
+  const name = (trophies()[i] || [id, id])[1]; const t = trophyX(id) || {earned: 0, of: 0};
+  openSheet(`<header class="ph"><p class="tab">Evidence report &middot; Case 001 / Ballard</p><h2 id="evTitle">${esc(name)}</h2></header>
+    <div class="intake"><span class="tico" style="background-position:-${Math.max(0, i) * 60}px 0" aria-hidden="true"></span><p class="psub">${esc(TROPHY_DESC[id] || "")}</p></div>
+    <dl class="stats"><div class="stat"><dt>Players who earned it</dt><dd>${fmtN(t.earned)}</dd><small>of ${fmtN(t.of)} active, ${esc(RANGE_TEXT[state.range])}</small></div></dl>
+    ${canShare() ? `<div class="btnrow">${shareBtn(fmtN(t.earned) + " of " + fmtN(t.of), `players earned ${name}`, RANGE_TEXT[state.range])}</div>` : ""}`, from);
+}
+
+
+/* ---------- the sightings board, holding, the kitchen, charts, sharing (spliced into app.js) ---------- */
+/* Neighbourhoods on the illustrated map (the level-select map; positions in its layout units). */
+const HOODS = [
+  ["ballard", "Ballard", 103, 99], ["fremont", "Fremont", 158, 113], ["gas_works", "Gas Works", 312, 107],
+  ["seattle_center", "Seattle Center", 188, 215], ["slu", "South Lake Union", 282, 197], ["capitol_hill", "Capitol Hill", 357, 189],
+  ["pike_place", "Pike Place", 197, 255], ["pioneer_square", "Pioneer Square", 353, 298], ["sodo", "SoDo", 277, 313]];
+const SOUVENIR = {freed_ballard: "Nugget's cage key", shinies_ballard: "five shinies, sorted", clean_ballard: "not one scratch", secret_room: "a brick from the secret room", culvert: "a bit of bent grate",
+  catwalk_watch: "the lost pocket watch", raccoon_ipa: "one empty Raccoon IPA", couple_photo: "the beer garden photo", drone_swat: "a drone propeller", dog_sulk: "a guard dog's dignity"};
+const COUNTER = [["snacks", "Snacks eaten", "the good ones were in the bins anyway"], ["bins", "Bins tipped", "they were full. now they're not."], ["gulls", "Gulls robbed", "they started it"],
+  ["cats", "Cats woken", "sorry cats"], ["pounce", "Pounces", "best part of the night"]];
+const SITE = "https://jimothythegame.com/stats/";
+let selHood = null;
+
+const hoodDemo = id => { const a = body && body.neighbourhoods; const h = Array.isArray(a) && a.find(x => x && x.id === id); return h && typeof h.demo === "boolean" ? h.demo : id === "ballard"; };
+const shareBtn = (value, label, sub, short) => `<button type="button" class="sharebtn" data-share="${esc(JSON.stringify({room: state.room, value: String(value), label, sub: sub || ""}))}" aria-label="Share: ${esc(value)} ${esc(label)}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 15V3M7 8l5-5 5 5"/><path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7"/></svg><span>${esc(short ? "Share " + short : "Share")}</span></button>`;
+const canShare = () => mode === "live" || mode === "sample";
+
+/* ---------- charts: one time-series component for every trend ----------
+   Young data is shown honestly: the days before the first record in the period are cut,
+   the axis starts on that day and says so, a lone day is a single labelled bar.
+   Hover, tap or the arrow keys read each day; the numbers are also in a table. */
+const CHARTS = {};
+function tsChart(id, series, n, opts = {}) {
+  const weekly = n > 120;
+  const pack = v => { const s = (v || []).slice(-n); if (!weekly) return s; const out = []; for (let i = 0; i < s.length; i += 7) { const w = s.slice(i, i + 7); out.push(opts.sum ? w.reduce((a, b) => a + b, 0) : Math.round(w.reduce((a, b) => a + b, 0) / w.length * 10) / 10); } return out; };
+  const S = series.map(x => Object.assign({}, x, {v: pack(x.values)}));
+  const m0 = S[0].v.length;
+  const dayOf = i => weekly ? Math.min(n - 1, i * 7) : i;
+  let first = 0; while (first < m0 && S.every(x => !x.v[first])) first++;
+  if (first >= m0) return emptyNote(opts.empty || "Nothing on file for this period.");
+  const T = S.map(x => Object.assign({}, x, {v: x.v.slice(first)}));
+  const m = m0 - first, labels = Array.from({length: m}, (_, i) => (weekly ? "week of " : "") + dayLabel(dayOf(i + first), n));
+  CHARTS[id] = {labels, series: T.map(x => ({name: x.name, v: x.v, sw: x.cls + (x.dash ? " dash" : "") + (x.bars || m0 - first === 1 ? " bar" : "")}))};
+  /* drawn at its panel's real width (the room's side panel or sheet) so labels stay 11 px; rooms re-render on resize */
+  const host = $("sideBody"), vw = document.documentElement.clientWidth, inner = host && host.clientWidth ? host.clientWidth - 32 : Math.min(vw, 460) - 32;
+  const W = Math.max(240, Math.round(inner - 40 - 6));
+  const H = Math.round(Math.max(170, Math.min(250, W * 0.32))), L = 40, R = 14, Tp = 14, B = 28, pw = W - L - R, ph = H - Tp - B;
+  const max = Math.max(1, ...T.flatMap(x => x.v));
+  const raw = max / 4, mag = Math.pow(10, Math.floor(Math.log10(raw))); const step = Math.max(1, [1, 2, 5, 10].map(f => f * mag).find(v => v >= raw)); const top = step * 4;
+  const slot = pw / m, X = i => L + slot * (i + 0.5), Y = v => Tp + ph * (1 - v / top);
+  let g = "";
+  for (let k = 0; k <= 4; k++) { const v = top * k / 4, y = Y(v); g += `<line x1="${L}" x2="${W - R}" y1="${y}" y2="${y}" class="${k ? "grid" : "base"}"/><text x="${L - 8}" y="${y + 4}" text-anchor="end">${fmtN(Math.round(v))}</text>`; }
+  const every = Math.max(1, Math.ceil(m / 6));
+  for (let i = 0; i < m; i += every) g += `<text x="${X(i)}" y="${H - 8}" text-anchor="middle">${esc(dayLabel(dayOf(i + first), n))}</text>`;
+  if ((m - 1) % every && m > 1) g += `<text x="${X(m - 1)}" y="${H - 8}" text-anchor="end" dx="${slot / 2}">${esc(dayLabel(dayOf(m - 1 + first), n))}</text>`;
+  const bw = Math.min(28, Math.max(2, slot * 0.62));
+  const marks = T.map(x => (x.bars || m === 1)
+    ? x.v.map((v, i) => `<rect x="${(X(i) - bw / 2).toFixed(1)}" y="${Y(v).toFixed(1)}" width="${bw.toFixed(1)}" height="${Math.max(0, Y(0) - Y(v)).toFixed(1)}" rx="1.5" class="${x.cls}"/>`).join("")
+    : `<polyline points="${x.v.map((v, i) => X(i).toFixed(1) + "," + Y(v).toFixed(1)).join(" ")}" class="${x.cls}${x.dash ? " dash" : ""}"/>` + (m <= 12 ? x.v.map((v, i) => `<circle cx="${X(i).toFixed(1)}" cy="${Y(v).toFixed(1)}" r="3" class="pt ${x.cls}"/>`).join("") : "")).join("");
+  const legend = T.map(x => `<span class="lg ${x.cls}${x.dash ? " dash" : ""}${x.bars || m === 1 ? " bar" : ""}"><i aria-hidden="true"></i>${esc(x.name)}</span>`).join("");
+  const rows = labels.map((lb, i) => `<tr><th scope="row">${esc(lb)}</th>${T.map(x => `<td>${fmtN(x.v[i])}</td>`).join("")}</tr>`).join("");
+  const span = m === 1 ? `${labels[0]} only` : `${labels[0]} to ${labels[m - 1]}`;
+  const young = first > 0 ? `<p class="ch-note"><span class="mk" aria-hidden="true"></span>First records in this period: ${esc(dayLabel(dayOf(first), n))}. Earlier days had none and are left off.</p>` : "";
+  return `<div class="chart" data-chart="${id}">
+    <div class="ch-meta"><div class="legend">${legend}</div><span class="ch-span">${esc(span)}${weekly ? " &middot; by week" : ""}</span></div>
+    <div class="ch-plot" tabindex="0" role="group" aria-label="${esc((opts.label || "") + ", " + span)}. Use the arrow keys to read each ${weekly ? "week" : "day"}.">
+      <svg viewBox="0 0 ${W} ${H}" aria-hidden="true" focusable="false">${g}${marks}<line class="guide" x1="0" x2="0" y1="${Tp}" y2="${Tp + ph}" visibility="hidden"/></svg>
+      <div class="ch-tip" hidden></div><span class="vh" aria-live="polite"></span></div>
+    ${young}${m === 1 ? `<p class="ch-note">One day on file so far; the trend appears as records come in.</p>` : ""}
+    <details class="nums"><summary>Show the numbers</summary><table><thead><tr><th scope="col">${weekly ? "Week" : "Day"}</th>${T.map(x => `<th scope="col">${esc(x.name)}</th>`).join("")}</tr></thead><tbody>${rows}</tbody></table></details></div>`;
+}
+function wireCharts() {
+  for (const el of document.querySelectorAll("[data-chart]")) {
+    const c = CHARTS[el.dataset.chart]; if (!c) continue;
+    const plot = el.querySelector(".ch-plot"), svg = plot.querySelector("svg"), tip = plot.querySelector(".ch-tip"), live = plot.querySelector(".vh"), guide = svg.querySelector(".guide");
+    const m = c.labels.length; let at = -1;
+    const show = i => {
+      at = Math.max(0, Math.min(m - 1, i));
+      const vb = svg.viewBox.baseVal, slot = (vb.width - 40 - 14) / m, x = 40 + slot * (at + 0.5);
+      guide.setAttribute("x1", x); guide.setAttribute("x2", x); guide.setAttribute("visibility", "visible");
+      tip.innerHTML = `<b>${esc(c.labels[at])}</b>` + c.series.map(s => `<span class="lg ${s.sw}"><i aria-hidden="true"></i>${esc(s.name)} <b>${fmtN(s.v[at])}</b></span>`).join("");
+      tip.hidden = false;
+      const px = x / vb.width * plot.clientWidth, tw = tip.offsetWidth;
+      tip.style.left = Math.max(0, Math.min(plot.clientWidth - tw, px - tw / 2)) + "px";
+      live.textContent = `${c.labels[at]}: ` + c.series.map(s => `${s.name} ${fmtN(s.v[at])}`).join(", ");
+    };
+    const hide = () => { tip.hidden = true; guide.setAttribute("visibility", "hidden"); };
+    const fromX = e => { const r = svg.getBoundingClientRect(), vb = svg.viewBox.baseVal; const x = (e.clientX - r.left) / r.width * vb.width; return Math.floor((x - 40) / ((vb.width - 54) / m)); };
+    plot.onpointermove = e => show(fromX(e));
+    plot.onpointerdown = e => show(fromX(e));
+    plot.onpointerleave = e => { if (e.pointerType === "mouse") hide(); };
+    plot.onkeydown = e => { const k = {ArrowRight: 1, ArrowLeft: -1}[e.key]; if (k) { e.preventDefault(); show(at < 0 ? (k > 0 ? 0 : m - 1) : at + k); } if (e.key === "Home") { e.preventDefault(); show(0); } if (e.key === "End") { e.preventDefault(); show(m - 1); } if (e.key === "Escape") hide(); };
+    plot.onblur = hide;
+  }
+}
+/* Horizontal bars: label, track, value; every row says what it counts. */
+function hbars(rows, opts = {}) {
+  const max = Math.max(1, opts.max || 0, ...rows.map(r => r.v || 0));
+  return `<ul class="hbars${opts.cls ? " " + opts.cls : ""}">${rows.map(r => `<li class="${r.cls || ""}">${r.icon || ""}<span class="hl">${r.label}</span>
+    <span class="tr" aria-hidden="true"><i style="width:${(100 * (r.v || 0) / max).toFixed(1)}%"></i></span><b class="hv">${r.value != null ? r.value : fmtN(r.v)}</b>${r.note ? `<small>${r.note}</small>` : ""}</li>`).join("")}</ul>`;
+}
+
+/* ---------- the sightings board: the map, the incident report, the trends ---------- */
+function boardDocs(d) {
+  if (!d) return roomState("The investigation", "Form AC-3");
+  if (!selHood || !HOODS.some(h => h[0] === selHood)) selHood = HOODS.slice().sort((a, b) => (d.hood[b[0]] || 0) - (d.hood[a[0]] || 0))[0][0];
+  const n = d.daily.length, R = RANGE_TEXT[state.range];
+  const pins = HOODS.map(([id, name, x, y]) => { const v = d.hood[id] || 0, demo = hoodDemo(id);
+    return `<button type="button" class="pin ${v ? "hot" : "cold"}${demo ? "" : " locked"}${id === selHood ? " sel" : ""}" data-hood="${id}" style="left:${(x / 480 * 100).toFixed(2)}%;top:${(y / 360 * 100).toFixed(2)}%" aria-pressed="${id === selHood}" aria-label="${esc(name)}: ${v ? fmtN(v) + " runs" : demo ? "no sightings yet" : "full game only"}. Open the incident report"><i aria-hidden="true"></i><span>${esc(name)}${v ? ": " + fmtN(v) : ""}</span></button>`; }).join("");
+  const list = HOODS.map(([id, name]) => { const v = d.hood[id] || 0;
+    return `<li><button type="button" data-hood="${id}" aria-pressed="${id === selHood}"><span>${esc(name)}</span><span class="${v ? "n" : "muted"}">${v ? fmtN(v) + " runs" : hoodDemo(id) ? "no sightings yet" : "full game only"}</span></button></li>`; }).join("");
+  const started = d.reach[0] || 0;
+  const reach = hbars(sections().map((s, i) => ({label: esc(s), v: d.reach[i] || 0, value: fmtN(d.reach[i] || 0) + (started && i ? `<small> of ${fmtN(started)}</small>` : "")})), {max: started});
+  const empty = density() === "empty";
+  return `
+  ${panel("w8", "Sightings across Seattle", `Runs per neighbourhood, ${esc(R)}. Only Ballard is open in the demo; the other pins are the full game's levels.`, `
+    <div class="mapbox"><img src="${ART.map}" width="960" height="720" alt="Illustrated map of Seattle with a pin on each neighbourhood level" decoding="async">${pins}</div>
+    <ul class="hoodlist">${list}</ul>`, "Map room", "mapdoc")}
+  <section class="panel w4 report" id="report" aria-live="polite">${reportHTML(d)}</section>
+  ${panel("w12", "Players sighted", "Different players active each day, with the rolling 7-day and 30-day counts (each counts a player once in its window).",
+    empty ? emptyNote("No sightings in this period. The alley remains suspiciously quiet.") : tsChart("cUnique", [{name: "that day", values: d.daily, bars: true, cls: "c1"}, {name: "last 7 days", values: d.roll7, cls: "c2"}, {name: "last 30 days", values: d.roll30, cls: "c3", dash: true}], n, {label: "Players sighted per day"}) + sparseNote(), "Trends &middot; " + esc(R))}
+  ${panel("w6", "New players", "First seen each day.", empty ? emptyNote("Nobody new in this period.") : tsChart("cNew", [{name: "new players", values: d.new, bars: true, cls: "c1"}], n, {sum: true, span: 6, label: "New players per day"}), "Trends")}
+  ${panel("w6", "Runs", "Levels started each day.", empty ? emptyNote("No runs in this period.") : tsChart("cSess", [{name: "runs", values: d.sess, bars: true, cls: "c2"}], n, {sum: true, span: 6, label: "Runs per day"}), "Trends")}
+  ${panel("w12", "How far players got", started ? `Players who reached each stretch of Ballard, west to east, out of the ${fmtN(started)} who started it.` : "Players who reached each stretch of Ballard, west to east.",
+    started ? reach : emptyNote("Nobody started Ballard in this period."), "Ballard, west to east")}`;
+}
+function reportHTML(d) {
+  const [id, name] = HOODS.find(h => h[0] === selHood) || HOODS[0]; const v = d.hood[id] || 0, demo = hoodDemo(id);
+  const row = (k, val) => `<div><dt>${k}</dt><dd>${val}</dd></div>`;
+  const st = demo ? (v ? ["Active", "hot"] : ["Quiet", ""]) : ["Sealed", "sealed"];
+  return `<header class="ph"><p class="tab">Incident report &middot; Form AC-3</p><h2>${esc(name)}</h2></header>
+    <dl class="rep">${row("Period", esc(RANGE_TEXT[state.range]))}${row("Runs", `<b>${fmtN(v)}</b>`)}
+    ${demo ? row("Players", `<b>${fmtN(d.reach[0] || 0)}</b> started it`) + row("Captured", `<b>${fmtN(captures(d))}</b> times`) + row("Nugget", `<b>${fmtN(d.rescueN)}</b> rescues`) : row("Notes", "Not open in the Ballard demo. Sealed until the full game.")}
+    ${row("Status", demo ? (v ? "he keeps coming back" : "quiet. for now.") : "full game only")}</dl>
+    <p class="stamp ${st[1]}">${st[0]}</p>
+    ${demo && v && canShare() ? `<div class="btnrow">${shareBtn(fmtN(v), `runs in ${name}`, RANGE_TEXT[state.range])}</div>` : ""}`;
+}
+function wireBoard() {
+  for (const b of document.querySelectorAll("[data-hood]")) b.onclick = () => {
+    selHood = b.dataset.hood;
+    for (const p of document.querySelectorAll("[data-hood]")) { const on = p.dataset.hood === selHood; p.setAttribute("aria-pressed", String(on)); p.classList.toggle("sel", on); }
+    $("report").innerHTML = reportHTML(D());
+    if (matchMedia("(max-width:1023px)").matches) $("report").scrollIntoView({behavior: reduce ? "auto" : "smooth", block: "nearest"});
+  };
+}
+
+/* ---------- holding: the funnel, rescues, the crew ---------- */
+function funnelSteps(d) {
+  if (d.funnel && Array.isArray(d.funnel.steps)) return d.funnel.steps;
+  const mid = body && body.funnelMid != null ? body.funnelMid : 5; const pct = (a, b) => b ? Math.round(1000 * a / b) / 10 : null;
+  const k = d.kpi, st = d.reach[0] || 0, re = d.reach[mid] || 0, fr = d.freed || 0;
+  return [{id: "active", label: "Active in range", players: k.active, of: []}, {id: "started", label: "Started Ballard", players: st, of: [{id: "active", players: k.active, pct: pct(st, k.active)}]},
+    {id: "reached", label: `Reached ${sections()[mid] || "the Locks"}`, players: re, of: [{id: "started", players: st, pct: pct(re, st)}]},
+    {id: "freed", label: "Freed Nugget", players: fr, of: [{id: "started", players: st, pct: pct(fr, st)}, {id: "reached", players: re, pct: pct(fr, re)}]}];
+}
+function holdingDocs(d) {
+  if (!d) return roomState("Holding", "Case 001 / Ballard");
+  const steps = funnelSteps(d); const top = Math.max(1, steps[0].players || 0);
+  const youStep = you ? {active: true, started: true, reached: you.reach >= (body && body.funnelMid != null ? body.funnelMid : 5), freed: !!(you.crew & 1)} : {};
+  const dens = density(), R = RANGE_TEXT[state.range];
+  const funnel = hbars(steps.map(s => ({cls: (s.id === "freed" ? "rw" : "") + (youStep[s.id] ? " you" : ""), label: esc(s.label) + (youStep[s.id] ? ' <span class="yours">you too</span>' : ""), v: s.players || 0,
+    note: s.of.length ? s.of.map(o => `${fmtN(s.players)} of ${fmtN(o.players)} ${o.id === "active" ? "active" : o.id === "started" ? "who started" : "who reached it"}${dens === "dense" && o.pct != null ? ` (${o.pct}%)` : ""}`).join(" &middot; ") : "everyone who played in this period"})), {max: top, cls: "funnel"});
+  const freed = (d.freed || 0) > 0;
+  const crew = CREW_NAME.map((nm, i) => { const lead = i === 0; const free = lead && freed; const mine = you && (you.crew & (1 << i));
+    const st = lead ? (free ? "Freed" : "Caged") : "Full game";
+    return `<li><button type="button" class="mug${lead ? " lead" : ""}${free ? " free" : ""}" data-crew="${i}" aria-haspopup="dialog" aria-label="${esc(nm)}: ${lead ? (free ? "freed by players in this period" : "still caged in this period") : "in the full game"}${mine ? "; you freed them" : ""}. Open the intake card">
+      <span class="face" style="background-position:-${i * 108}px -${free ? 108 : 0}px" aria-hidden="true"></span>
+      <span class="nm">${esc(nm)}</span><span class="stamp ${lead ? (free ? "free" : "caged") : "sealed"}" aria-hidden="true">${st}</span>${mine ? '<span class="yours">you freed</span>' : ""}</button></li>`; }).join("");
+  const yourRescue = you ? `<p class="yourres"><b>Your rescue: ${esc(mmss(you.best))}</b>${d.rescue ? ` &middot; players' average ${esc(mmss(d.rescue))}` : ""}<small>From your game on this device; never sent to our server.</small></p>` : "";
+  return `
+  ${panel("w6", "Rescues", "Runs that freed Nugget from the cage by the Locks, and how long they took.", `
+    <dl class="stats"><div class="stat reward"><dt>Rescues</dt><dd>${fmtN(d.rescueN)}</dd><small>runs that freed Nugget</small></div>
+      <div class="stat"><dt>Average rescue time</dt><dd>${esc(mmss(d.rescue))}</dd><small>${d.rescueN ? `minutes of play from the run's start, over ${fmtN(d.rescueN)} ${d.rescueN === 1 ? "rescue" : "rescues"}` : "no rescues yet"}</small></div>
+      <div class="stat"><dt>Players who freed him</dt><dd>${fmtN(d.freed)}</dd><small>different players</small></div></dl>
+    ${yourRescue}${dens === "empty" ? emptyNote("No rescues on file for this period.") : ""}
+    ${canShare() && d.rescueN ? `<div class="btnrow">${shareBtn(fmtN(d.rescueN), "times players freed Nugget", R, "rescues")}${d.rescue ? shareBtn(mmss(d.rescue), "average rescue time", `over ${fmtN(d.rescueN)} rescues`, "rescue time") : ""}</div>` : ""}`, "Case 001 / Ballard &middot; " + esc(R))}
+  ${panel("w6", "From the street to the cage", "Different players at each step, each with what it's out of.", funnel + sparseNote(), "Case progress")}
+  ${panel("w12", "The crew", "Eight friends in Animal Control's cages. Nugget is the demo's rescue; the other seven wait in the full game.", `<ul class="lineup">${crew}</ul>`, "The line-up")}`;
+}
+function wireHolding() {
+  for (const b of document.querySelectorAll(".mug")) b.onclick = () => {
+    const i = +b.dataset.crew, nm = CREW_NAME[i], d = D(); const free = i === 0 && d && d.freed > 0; const mine = you && (you.crew & (1 << i));
+    openSheet(`<header class="ph"><p class="tab">Intake card &middot; Clean Sweep</p><h2 id="sheetTitle">${esc(nm)}</h2></header>
+      <div class="intake"><span class="face" style="background-position:-${i * 108}px -${free ? 108 : 0}px" aria-hidden="true"></span>
+      <p class="psub">${i === 0 ? (free ? `Cage found open. Freed by ${fmtN(d.freed)} ${d.freed === 1 ? "player" : "players"}, ${esc(RANGE_TEXT[state.range])}.` : "Caged by the Ballard Locks. Tagged for the first van to Yakima.") : "Held for the full game. Every neighbourhood has a friend in a cage."}</p></div>
+      ${mine ? '<p class="yourres"><b>You freed this one.</b><small>From your game on this device.</small></p>' : ""}`, b);
+  };
+}
+
+/* ---------- the kitchen: Jimothy's counter-report ---------- */
+function kitchenDocs(d) {
+  if (!d) return roomState("The kitchen", "Staff only");
+  const c = d.counter || {}; const total = COUNTER.reduce((a, [k]) => a + (c[k] || 0), 0);
+  const lines = COUNTER.map(([k, label, note]) => `<li><span class="rl">${esc(label)}</span><b>${fmtN(c[k] || 0)}</b>${canShare() && c[k] ? shareBtn(fmtN(c[k]), label.toLowerCase(), "Jimothy's counter-report, " + RANGE_TEXT[state.range]) : '<span></span>'}<em>${esc(note)}</em></li>`).join("");
+  const got = trophies().map(([id], i) => [id, i, trophyX(id)]).filter(([, , t]) => t && t.earned > 0);
+  const souv = got.map(([id, i]) => `<li><a href="${hashFor("evidence")}" data-bag="${id}"><span class="tico" style="background-position:-${i * 60}px 0" aria-hidden="true"></span><span class="sn">${esc(SOUVENIR[id])}</span><small>Evidence bag &rarr;</small></a></li>`).join("");
+  return `
+  ${panel("w6", "Jimothy's counter-report", `Everything players' Jimothys got up to, ${esc(RANGE_TEXT[state.range])}, all players together.`, `
+    <ul class="rcpt">${lines}</ul><p class="rt"><span>Total</span><b>${fmtN(total)}</b></p>
+    ${total ? "" : emptyNote("Nothing on the receipt for this period. Quiet night.")}
+    <div class="btnrow"><button type="button" class="btn-plate" id="printRcpt">Print the receipt</button></div>`, "Filed by the suspect", "counter")}
+  ${panel("w6", "Souvenirs (do not touch)", "What he kept from each trophy players earned this period. The counts are in the evidence room.",
+    (souv ? `<ul class="souvs">${souv}</ul>` : emptyNote("Nothing on the fridge yet. Give it a night.")) + fieldNote("whoever is eating the lunches: it's me. it's been me."), "Staff fridge")}`;
+}
+function wireKitchen() {
+  for (const a of document.querySelectorAll("[data-bag]")) a.onclick = () => { state.drawer = "trophies"; state.openBag = a.dataset.bag; };
+  const p = $("printRcpt"); if (p) p.onclick = () => receiptImage().then(cv => shareCanvas(cv, "jimothy-receipt.png", "Jimothy's counter-report", "Print the receipt", p));
+}
+const UI_FONT = '"Open Sans", system-ui, sans-serif';
+async function receiptImage() {
+  try { await Promise.all([`800 40px ${UI_FONT}`, `700 26px ${UI_FONT}`].map(f => document.fonts.load(f))); } catch (e) {}
+  const d = D(), c = d.counter || {}; const W = 640, rows = COUNTER.length, H = 420 + rows * 46;
+  const mono = '"Courier New", ui-monospace, monospace';
+  const cv = document.createElement("canvas"); cv.width = W; cv.height = H; const x = cv.getContext("2d");
+  x.fillStyle = "#12101B"; x.fillRect(0, 0, W, H);
+  x.fillStyle = "#f7f3ea"; x.beginPath(); x.moveTo(60, 30);
+  for (let i = 0; i <= 26; i++) x.lineTo(60 + i * (W - 120) / 26, i % 2 ? 22 : 30);
+  x.lineTo(W - 60, H - 30); for (let i = 26; i >= 0; i--) x.lineTo(60 + i * (W - 120) / 26, i % 2 ? H - 22 : H - 30); x.closePath(); x.fill();
+  x.fillStyle = "#1b1e2b"; x.textAlign = "center";
+  x.font = `800 34px ${UI_FONT}`; x.fillText("JIMOTHY'S COUNTER-REPORT", W / 2, 92);
+  x.font = `400 21px ${mono}`; x.fillText(`R.C.A.C. BALLARD · ${RANGE_TEXT[state.range].toUpperCase()}`, W / 2, 128);
+  x.fillText("- - - - - - - - - - - - - - - - - - -", W / 2, 160);
+  x.textAlign = "left"; let y = 206; let total = 0;
+  for (const [k, label] of COUNTER) { const v = c[k] || 0; total += v; x.font = `700 25px ${mono}`; x.fillText(label.toUpperCase(), 92, y); x.textAlign = "right"; x.fillText(fmtN(v), W - 92, y); x.textAlign = "left"; y += 46; }
+  x.textAlign = "center"; x.font = `400 21px ${mono}`; x.fillText("- - - - - - - - - - - - - - - - - - -", W / 2, y); y += 44;
+  x.textAlign = "left"; x.font = `700 29px ${mono}`; x.fillText("TOTAL", 92, y); x.textAlign = "right"; x.fillText(fmtN(total), W - 92, y); y += 50;
+  x.textAlign = "center"; x.font = `400 21px ${mono}`; x.fillText(mode === "sample" ? "SAMPLE DATA" : "HIGHLIGHTS. NO REFUNDS.", W / 2, y); y += 34;
+  x.fillText("jimothythegame.com/stats", W / 2, y);
+  return cv;
+}
+
+/* ---------- share cards: the room's own art beside the number, in the page's plate ---------- */
+const imgCache = {};
+const loadImg = src => imgCache[src] || (imgCache[src] = new Promise((res, rej) => { const i = new Image(); i.onload = () => res(i); i.onerror = rej; i.src = src; }));
+function wrap(ctx, s, w) { const out = []; let ln = ""; for (const word of s.split(" ")) { const t = ln ? ln + " " + word : word; if (ctx.measureText(t).width > w && ln) { out.push(ln); ln = word; } else ln = t; } if (ln) out.push(ln); return out; }
+async function drawCard(o) {
+  try { await Promise.all([`800 200px ${UI_FONT}`, `700 30px ${UI_FONT}`, `600 24px ${UI_FONT}`].map(f => document.fonts.load(f))); } catch (e) {}
+  const W = 1200, H = 630, cv = document.createElement("canvas"); cv.width = W; cv.height = H; const x = cv.getContext("2d");
+  const art = await loadImg(ART.c2).catch(() => null); /* the cutaway's 2x file at 1:1 */
+  const room = ROOM[o.room] || ROOM.dispatch; const fx = room.focus, fy = (room.r[1] + room.r[3]) / 2;
+  x.fillStyle = "#121428"; x.fillRect(0, 0, W, H);
+  x.imageSmoothingEnabled = true;
+  if (art) {
+    const sx = Math.max(0, Math.min(1440 - 280, Math.round(fx - 140))), sy = Math.max(0, Math.min(1080 - 315, Math.round(fy - 157)));
+    x.drawImage(art, sx * 2, sy * 2, 560, 630, 0, 0, 560, 630);
+    for (const s of SPRITES) { if (s.x + s.w < sx || s.x > sx + 280 || s.y + s.h < sy || s.y > sy + 315) continue;
+      const sp = await loadImg(ART[s.k]).catch(() => null); if (!sp) continue;
+      x.save(); x.imageSmoothingEnabled = !!s.d; const dx = (s.x - sx) * 2, dy = (s.y - sy) * 2, sw = s.d ? sp.width : s.w, sh = s.d ? sp.height : s.h;
+      if (s.flip) { x.translate(dx + s.w * 2, dy); x.scale(-1, 1); x.drawImage(sp, 0, 0, sw, sh, 0, 0, s.w * 2, s.h * 2); }
+      else x.drawImage(sp, 0, 0, sw, sh, dx, dy, s.w * 2, s.h * 2);
+      x.restore(); }
+  }
+  x.imageSmoothingEnabled = true;
+  /* the plate: ink, a thin gold rim, one shadow */
+  x.fillStyle = "rgba(0,0,6,.55)"; x.fillRect(604, 58, 548, 530);
+  x.fillStyle = "#1B1825"; x.fillRect(600, 52, 548, 530);
+  x.strokeStyle = "rgba(242,194,48,.55)"; x.lineWidth = 2; x.strokeRect(601, 53, 546, 528);
+  x.fillStyle = "#F2C230"; x.font = `800 20px ${UI_FONT}`; x.fillText(`RAIN CITY ANIMAL CONTROL · ${room.long.toUpperCase()}`, 636, 104, 480);
+  x.fillStyle = "#FFF0CC"; let fs = 180; x.font = `800 ${fs}px ${UI_FONT}`;
+  while (x.measureText(o.value).width > 480 && fs > 64) { fs -= 8; x.font = `800 ${fs}px ${UI_FONT}`; }
+  x.fillText(o.value, 630, 128 + fs * 0.82);
+  let y = 128 + fs * 0.82 + 56; x.fillStyle = "#FFF0CC"; x.font = `700 32px ${UI_FONT}`;
+  for (const l of wrap(x, o.label, 480).slice(0, 3)) { x.fillText(l, 636, y); y += 42; }
+  x.fillStyle = "#ADB3D1"; x.font = `600 24px ${UI_FONT}`; x.fillText(o.sub || "", 636, y + 4, 480);
+  x.fillStyle = "#12101B"; x.fillRect(602, 516, 544, 64); x.fillStyle = "#F2C230"; x.font = `800 24px ${UI_FONT}`; x.fillText("jimothythegame.com/stats", 636, 556);
+  x.fillStyle = "#ADB3D1"; x.textAlign = "right"; x.font = `700 18px ${UI_FONT}`; if (mode === "sample") x.fillText("SAMPLE DATA", 1116, 556); x.textAlign = "left";
+  return cv;
+}
+let shareURL = null;
+async function shareCanvas(cv, filename, title, heading, opener, link = SITE) {
+  const blob = await new Promise(r => cv.toBlob(r, "image/png"));
+  if (shareURL) URL.revokeObjectURL(shareURL); shareURL = URL.createObjectURL(blob);
+  const file = new File([blob], filename, {type: "image/png"});
+  const can = !!(navigator.canShare && navigator.canShare({files: [file]}));
+  openSheet(`<header class="ph"><p class="tab">Share</p><h2 id="sheetTitle">${esc(heading)}</h2></header><img class="shimg" src="${shareURL}" alt="${esc(title)}">
+    <div class="btnrow"><a class="btn-primary" href="${shareURL}" download="${esc(filename)}">Download image</a>${can ? '<button type="button" class="btn-plate" id="shGo">Share&hellip;</button>' : ""}<button type="button" class="btn-plate" id="shCopy">Copy link</button></div>`, opener);
+  if (can) $("shGo").onclick = () => navigator.share({files: [file], title: "Jimothy: Rain City Rumble", text: `${title}. ${link}`}).catch(() => {});
+  $("shCopy").onclick = () => { try { navigator.clipboard.writeText(link).then(() => { $("shCopy").textContent = "Link copied"; }); } catch (e) {} };
+}
+document.addEventListener("click", e => {
+  const b = e.target.closest && e.target.closest("[data-share]"); if (!b) return;
+  const o = JSON.parse(b.dataset.share);
+  drawCard(o).then(cv => shareCanvas(cv, `jimothy-${o.room}.png`, `${o.value} ${o.label}`, "Share this record", b, SITE + "#" + o.room));
+});
+window.__shareCard = o => drawCard(o).then(cv => cv.toDataURL("image/png")); /* review screenshots */
+function openSheet(html, from) {
+  const dlg = $("evDlg"); $("evSheet").innerHTML = html + `<div class="btnrow end"><button type="button" class="btn-plate" id="sheetClose">Close</button></div>`;
+  dlg.setAttribute("aria-labelledby", ($("evSheet").querySelector("h2") || {}).id || "sheetTitle");
+  if (!dlg.open) dlg.showModal(); $("sheetClose").focus(); $("sheetClose").onclick = () => dlg.close();
+  dlg.onclose = () => from && from.focus && from.focus();
+}
+
+
+/* ---------- navigation ---------- */
+function setRange(r) {
+  if (!RANGES.includes(r) || r === state.range) return;
+  state.range = r; store.set("jimothy:office:range", r);
+  history.replaceState(null, "", hashFor(state.room, r));
+  /* immediate feedback: the pressed segment moves at once and shows it is fetching */
+  state.pending = cache[`${r}|${state.me ? 1 : 0}`] || mode !== "live" ? null : r;
+  for (const b of document.querySelectorAll(".seg-b")) { b.setAttribute("aria-pressed", String(b.dataset.range === r)); if (state.pending === b.dataset.range) b.setAttribute("aria-busy", "true"); }
+  load().then(() => { state.pending = null; });
+}
+document.addEventListener("click", e => {
+  const s = e.target.closest && e.target.closest(".seg-b"); if (s) { setRange(s.dataset.range); return; }
+  const r = e.target.closest && e.target.closest("[data-retry]"); if (r) { r.setAttribute("aria-busy", "true"); r.textContent = "Trying…"; for (const k in cache) delete cache[k]; mode = "loading"; load(); }
+});
+
+function renderAll() {
+  renderStatus(); renderDirectory();
+  renderWorldLive(); renderHud(); renderSide();
+  const f2 = $("forget2"); if (f2) f2.onclick = forgetYou;
+  const ov = state.room === "overview";
+  document.body.classList.toggle("zoomed", !ov);
+  document.title = (ov ? "" : ROOM[state.room].long + " · ") + "Rain City Animal Control · Jimothy: Rain City Rumble";
+}
+let first = true;
+function route() {
+  const dlg = $("evDlg"); if (dlg && dlg.open) dlg.close(); /* a record or share sheet never outlives its room */
+  const h = parseHash();
+  if (h.you) readYou(h.you);
+  const prev = state.room;
+  state.room = h.room;
+  if (h.range && h.range !== state.range) { state.range = h.range; store.set("jimothy:office:range", h.range); load(); }
+  if (prev !== state.room) $("side").classList.remove("expanded");
+  renderAll();
+  /* the camera moves after the panel is laid out, so the room is framed in the space beside it */
+  requestAnimationFrame(() => moveCamera(!first && prev !== state.room));
+  if (!first && prev !== state.room) {
+    if (state.room === "overview") { const a = document.querySelector(`#world .room[data-room="${prev}"]`); if (a) a.focus({preventScroll: true}); }
+    else { const t = $("roomTitle"); if (t) t.focus({preventScroll: true}); }
+  }
+  first = false;
+}
+addEventListener("hashchange", route);
+let rz = 0;
+addEventListener("resize", () => { cancelAnimationFrame(rz); rz = requestAnimationFrame(() => { if (state.room !== "overview") renderSide(); moveCamera(false); }); });
+const go = id => { location.hash = hashFor(id); };
+addEventListener("keydown", e => {
+  if (e.metaKey || e.ctrlKey || e.altKey) return;
+  if (e.target.closest && e.target.closest("input,textarea,select,dialog,.ch-plot,[role=tab]")) return;
+  if (e.key === "Escape" && state.room !== "overview") { e.preventDefault(); go("overview"); return; }
+  if (/^[1-6]$/.test(e.key)) { go(ROOMS[+e.key - 1].id); return; }
+  const dir = {ArrowLeft: [-1, 0], ArrowRight: [1, 0], ArrowUp: [0, -1], ArrowDown: [0, 1]}[e.key];
+  if (dir && state.room !== "overview" && !(e.target.closest && e.target.closest(".side-body"))) {
+    const n = neighbour(state.room, dir[0], dir[1]); if (n) { e.preventDefault(); go(n); }
+  }
+});
+document.addEventListener("click", e => {
+  if (e.target.closest && e.target.closest("[data-out]")) { go("overview"); return; }
+  if (e.target.closest && e.target.closest("[data-about]")) { openAbout(e.target.closest("[data-about]")); }
+});
+/* a tap on the dimmed building outside the room returns to the whole building */
+document.addEventListener("click", e => { if (state.room !== "overview" && e.target.closest && e.target.closest(".dim")) go("overview"); });
+function openAbout(from) {
+  openSheet(`<header class="ph"><p class="tab">Records office</p><h2 id="sheetTitle">About these records</h2></header>
+    <p class="psub">Anonymous play stats from <b>Jimothy: Rain City Rumble</b>, a rainy-Seattle pixel-art platformer about a round raccoon on very long legs. Rain City Animal Control is part of the game; no real animal is tracked here.</p>
+    <dl class="defs">
+      <div><dt>Players</dt><dd>Game installs that share anonymous play stats. One install is one player, so someone on two devices counts twice.</dd></div>
+      <div><dt>Runs</dt><dd>Each time a level starts. One player can file many runs.</dd></div>
+      <div><dt>Escapes</dt><dd>Runs that free Nugget from his cage by the Ballard Locks.</dd></div>
+      <div><dt>Updates</dt><dd>The file refreshes every few minutes. It says Live only while the numbers are fresh.</dd></div>
+      <div><dt>Your own runs</dt><dd>A browser that plays the game is left out of the counts unless you include it, so totals are everyone else's.</dd></div>
+    </dl>
+    <p class="note-small"><a href="privacy.html">Privacy</a> &middot; Numbers count players and runs, never people. Keys: 1 to 6 open a room, the arrow keys move between rooms, Escape returns to the whole building.</p>
+    <img class="about-logo" src="${ART.logo}" width="260" height="123" alt="Jimothy: Rain City Rumble" loading="lazy">`, from);
+}
+setInterval(() => { if (mode === "live") renderStatus(); }, 60000);
+
+/* ---------- start ---------- */
+state.range = parseHash().range || (RANGES.includes(store.get("jimothy:office:range")) ? store.get("jimothy:office:range") : "30");
+readYou(parseHash().you);
+buildWorld();
+route();
+load();
+})();
+
+</script>
+</body>
+</html>
