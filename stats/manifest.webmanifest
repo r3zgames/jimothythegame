@@ -1,0 +1,15 @@
+{
+  "name": "Rain City Animal Control",
+  "short_name": "Animal Control",
+  "description": "The live sightings office for Jimothy: Rain City Rumble.",
+  "start_url": "/stats/",
+  "scope": "/stats/",
+  "display": "standalone",
+  "background_color": "#05060c",
+  "theme_color": "#23202E",
+  "icons": [
+    {"src": "/stats/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any"},
+    {"src": "/stats/apple-touch-icon.png", "sizes": "180x180", "type": "image/png"},
+    {"src": "/stats/icon-32.png", "sizes": "32x32", "type": "image/png"}
+  ]
+}
