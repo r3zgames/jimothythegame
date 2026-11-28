@@ -1,0 +1,4 @@
+Contact: mailto:hello@r3zgames.com
+Expires: 2027-11-28T13:26:06Z
+Preferred-Languages: en
+Canonical: https://jimothythegame.com/.well-known/security.txt
